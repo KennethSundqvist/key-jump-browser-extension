@@ -1,0 +1,14 @@
+{
+    "manifest_version": 2,
+
+    "name": "Key Jump",
+    "description": "Use your keyboard to click on links and form controls.",
+    "version": "$version",
+
+    "content_scripts": [{
+        "matches": ["*://*/*", "ftp://*/*"],
+        "all_frames": false,
+        "run_at": "document_end",
+        "js": ["contentscript.js"]
+    }]
+}

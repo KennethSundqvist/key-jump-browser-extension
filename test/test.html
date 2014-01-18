@@ -9,6 +9,7 @@
     .col { float: left; width: 50%; }
 
     .KEYJUMP_hint {
+      transition: all 0.2s ease-out;
       position: absolute;
       padding: 2px 3px;
       color: #fff;
@@ -19,6 +20,14 @@
       font: 13px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
       text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
       pointer-events: none;
+    }
+
+    .KEYJUMP_match {
+      transition: all 0.17s cubic-bezier(.08,1.7,.71,2);
+      -webkit-transform: scale(1.4);
+      transform: scale(1.4);
+      z-index: 1;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
     }
   </style>
 </head>
@@ -32,7 +41,7 @@
 
     <p><a href="#"><code>a</code> element</a> with <code>href</code> attribute.</p>
     <p>Input <input></p>
-    <p>Checkboxe <input type="checkbox"></p>
+    <p>Checkbox <input type="checkbox"></p>
     <p>Radio <input type="radio"></p>
   </div>
 

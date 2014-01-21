@@ -10,6 +10,16 @@ textarea:not([disabled]),
 select:not([disabled]),
 button:not([disabled])
 """
+# Unknown input types are treated as text inputs by Chrome
+# so we whitelist the ones we know can't be typed in.
+#
+# Only care about if the input can by typed in
+# as of the latest version of Chrome.
+KNOWN_NON_TYPABLE_INPUT_TYPES = [
+  'button', 'submit', 'reset', 'image',
+  'checkbox', 'radio', 'range', 'color', 'file',
+  'datetime-local', 'date', 'time', 'month', 'week'
+]
 CLASSNAME_HINT = 'KEYJUMP_hint'
 CLASSNAME_MATCH = 'KEYJUMP_match'
 
@@ -85,9 +95,10 @@ trigger = ->
 
 canTypeInElement = (el) ->
   tag = el.tagName.toLocaleLowerCase()
-  if tag is 'textarea'
-    return true
-  false
+  inputType = el.getAttribute 'type'
+  el.contentEditable == 'true' ||
+    tag == 'textarea' ||
+    (tag == 'input' && inputType not in KNOWN_NON_TYPABLE_INPUT_TYPES)
 
 handleKeyboardEvent = (event) ->
   hasModifier = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey

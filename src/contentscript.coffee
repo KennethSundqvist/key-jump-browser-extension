@@ -5,7 +5,7 @@ KEYCODE_RETURN = 13
 KEYCODE_BACKSPACE = 8
 TARGET_ELEMENTS = """
 a[href],
-input:not([disabled]):not([hidden]),
+input:not([disabled]):not([type=hidden]),
 textarea:not([disabled]),
 select:not([disabled]),
 button:not([disabled])

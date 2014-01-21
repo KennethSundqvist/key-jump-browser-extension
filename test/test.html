@@ -7,6 +7,8 @@
     body { margin: 1.3333em; font: 15px/1.3333 "Helvetica Neue", Helvetica, Arial, sans-serif; }
     .clearfix { overflow: hidden; }
     .col { float: left; width: 50%; }
+    [contenteditable='true'],
+    [contenteditable]:not([contenteditable='false']) { border: 2px inset; }
 
     .KEYJUMP_hint {
       transition: all 0.2s ease-out;
@@ -42,6 +44,8 @@
     <p><a href="#"><code>a</code> element</a> with <code>href</code> attribute.</p>
     <p>Input <input></p>
     <p>Textarea <textarea></textarea></p>
+    <p>contenteditable <span contenteditable>This is a span</span></p>
+    <p>contenteditable=true <span contenteditable="true">This is a span</span></p>
     <p>Checkbox <input type="checkbox"></p>
     <p>Radio <input type="radio"></p>
   </div>
@@ -49,10 +53,11 @@
   <div class="col">
     <h2>Do not find these</h2>
 
-    <p><a><code>a</code> element</a> without <code>href</code> attribute.</p>
-    <p>Hidden input. <input type="hidden"></p>
-    <p>Disabled input. <input disabled="disabled"></p>
-    <p>Disabled textarea. <textarea disabled="disabled"></textarea></p>
+    <p><a><code>a</code> element</a> without <code>href</code> attribute</p>
+    <p>Hidden input <input type="hidden"></p>
+    <p>Disabled input <input disabled="disabled"></p>
+    <p>Disabled textarea <textarea disabled="disabled"></textarea></p>
+    <p>contenteditable=false <span contenteditable="false">This is a span</span></p>
   </div>
 </div>
 
@@ -80,7 +85,8 @@
     <h2>Do not activate when these are focused</h2>
 
     <p>input <input></p>
-    <p>content editable <span contenteditable="true" style="border: 2px inset">This is a span</span></p>
+    <p>contenteditable <span contenteditable>This is a span</span></p>
+    <p>contenteditable=true <span contenteditable="true">This is a span</span></p>
   </div>
 </div>
 

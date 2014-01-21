@@ -8,7 +8,9 @@ a[href],
 input:not([disabled]):not([type=hidden]),
 textarea:not([disabled]),
 select:not([disabled]),
-button:not([disabled])
+button:not([disabled]),
+[contenteditable='true'],
+[contenteditable]:not([contenteditable='false'])
 """
 # Unknown input types are treated as text inputs by Chrome
 # so we whitelist the ones we know can't be typed in.

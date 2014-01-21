@@ -53,57 +53,53 @@ activate = ->
     if top == 0 and left == 0
       console.log 'Hint at 0x0 pos', hint
 
-  null
+  return
 
 deactivate = ->
   active = false
   hints = null
   hintsParentEl.removeChild hintsParentEl.firstChild while hintsParentEl.firstChild
-  null
   query = null
+  return
 
-selectHints = (e) ->
-  char = String.fromCharCode e.keyCode
-  if e.keyCode == KEYCODE_BACKSPACE
-    e.preventDefault()
+selectHints = (event) ->
+  char = String.fromCharCode event.keyCode
+  if event.keyCode == KEYCODE_BACKSPACE
+    event.preventDefault()
     query = query.slice 0, -1
   else if HINT_CHARACTERS.indexOf(char) > -1
-    e.preventDefault()
+    event.preventDefault()
     query += char
 
-  if hintMatch
-    hintMatch.el.classList.remove CLASSNAME_MATCH
+  if hintMatch then hintMatch.el.classList.remove CLASSNAME_MATCH
   hintMatch = hints[query]
-  if hintMatch
-    hintMatch.el.classList.add CLASSNAME_MATCH
+  if hintMatch then hintMatch.el.classList.add CLASSNAME_MATCH
+
+  return
 
 trigger = ->
   if hintMatch
     console.log 'Should trigger hint "' + hintMatch.id + '"'
+    deactivate()
+  return
 
-isEditableElement = (el) ->
+canTypeInElement = (el) ->
   tag = el.tagName.toLocaleLowerCase()
   if tag is 'textarea'
     return true
   false
 
-handleKeyboardEvent = (e) ->
-  activeElement = d.activeElement
-
-  if active
-    if e.keyCode == KEYCODE_PERIOD or e.keyCode == KEYCODE_ESC
-      deactivate()
-    else if e.keyCode == KEYCODE_RETURN
-      trigger()
-    else
-      selectHints e
-  else
-    if e.keyCode == KEYCODE_PERIOD
-      if !isEditableElement activeElement
-        activate()
-        e.preventDefault()
-
-  null
+handleKeyboardEvent = (event) ->
+  hasModifier = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey
+  if !hasModifier && !canTypeInElement d.activeElement
+    if event.keyCode == KEYCODE_PERIOD
+      if active then deactivate() else activate()
+      event.preventDefault()
+    else if active
+      if event.keyCode == KEYCODE_RETURN then trigger() && event.preventDefault()
+      else if event.keyCode == KEYCODE_ESC then deactivate() && event.preventDefault()
+      else selectHints event
+  return
 
 # Init
 

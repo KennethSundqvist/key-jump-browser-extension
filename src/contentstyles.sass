@@ -1,0 +1,21 @@
+$color_hint: #ee5757
+
+.KEYJUMP_hint
+  transition: all 0.2s ease-out
+  position: absolute
+  padding: 2px 3px
+  color: #fff
+  background: $color_hint
+  border: 1px solid $color_hint - #333
+  border-radius: 2px
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3)
+  font: 13px/1 "Helvetica Neue", Helvetica, Arial, sans-serif
+  letter-spacing: 1px
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2)
+  pointer-events: none
+
+.KEYJUMP_match
+  transition: all 0.17s cubic-bezier(.08, 1.7, .71, 2)
+  transform: scale(1.4)
+  z-index: 1
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35)

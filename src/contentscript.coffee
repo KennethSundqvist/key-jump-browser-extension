@@ -22,12 +22,14 @@ KNOWN_NON_TYPABLE_INPUT_TYPES = [
   'checkbox', 'radio', 'range', 'color', 'file',
   'datetime-local', 'date', 'time', 'month', 'week'
 ]
+CLASSNAME_PARENT = 'KEYJUMP'
 CLASSNAME_HINT = 'KEYJUMP_hint'
 CLASSNAME_MATCH = 'KEYJUMP_match'
 
 d = document
 active = false
 hintsParentEl = d.createElement 'div'
+hintsParentEl.classList.add CLASSNAME_PARENT
 hintSourceEl = d.createElement 'div'
 hintSourceEl.classList.add CLASSNAME_HINT
 hints = null

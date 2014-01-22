@@ -91,7 +91,8 @@ selectHints = (event) ->
   return
 
 triggerHintMatch = (event) ->
-  if canTypeInElement hintMatch.target
+  tag = hintMatch.target.tagName.toLocaleLowerCase()
+  if tag == 'select' || canTypeInElement hintMatch.target
     hintMatch.target.focus()
   else
     clickEvent = new MouseEvent 'click',

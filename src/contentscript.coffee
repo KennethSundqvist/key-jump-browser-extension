@@ -91,10 +91,20 @@ selectHints = (event) ->
 
   return
 
-trigger = ->
-  if hintMatch
-    console.log 'Should trigger hint "' + hintMatch.id + '"'
-    deactivate()
+triggerHintMatch = (event) ->
+  if canTypeInElement hintMatch.target
+    hintMatch.target.focus()
+  else
+    clickEvent = new MouseEvent 'click',
+      view: window
+      bubbles: true
+      cancelable: true
+      shiftKey: event.shiftKey
+      ctrlKey:  event.ctrlKey
+      altKey:   event.altKey
+      metaKey:  event.metaKey
+    hintMatch.target.dispatchEvent clickEvent
+  deactivate()
   return
 
 canTypeInElement = (el) ->
@@ -106,14 +116,19 @@ canTypeInElement = (el) ->
 
 handleKeyboardEvent = (event) ->
   hasModifier = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey
-  if !hasModifier && !canTypeInElement d.activeElement
-    if event.keyCode == KEYCODE_PERIOD
-      if active then deactivate() else activate()
+  if !canTypeInElement d.activeElement
+    if event.keyCode == KEYCODE_RETURN && hintMatch
+      triggerHintMatch event
       event.preventDefault()
-    else if active
-      if event.keyCode == KEYCODE_RETURN then trigger() && event.preventDefault()
-      else if event.keyCode == KEYCODE_ESC then deactivate() && event.preventDefault()
-      else selectHints event
+    else if !hasModifier
+      if event.keyCode == KEYCODE_PERIOD
+        if active then deactivate() else activate()
+        event.preventDefault()
+      else if active
+        if event.keyCode == KEYCODE_ESC
+          deactivate()
+          event.preventDefault()
+        else selectHints event
   return
 
 # Init

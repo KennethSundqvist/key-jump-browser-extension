@@ -1,8 +1,11 @@
 $color_hint: #ee5757
 
+$zindex_hint: 9999999999
+
 .KEYJUMP_hint
   transition: all 0.2s ease-out
   position: absolute
+  z-index: $zindex_hint
   padding: 2px 3px
   color: #fff
   background: $color_hint
@@ -17,5 +20,5 @@ $color_hint: #ee5757
 .KEYJUMP_match
   transition: all 0.17s cubic-bezier(.08, 1.7, .71, 2)
   transform: scale(1.4)
-  z-index: 1
+  z-index: $zindex_hint + 1
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35)

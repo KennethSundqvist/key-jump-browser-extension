@@ -15,12 +15,11 @@ button:not([disabled]),
 # Unknown input types are treated as text inputs by Chrome
 # so we whitelist the ones we know can't be typed in.
 #
-# Only care about if the input can by typed in
+# Only care about if the input can not be typed in
 # as of the latest version of Chrome.
 KNOWN_NON_TYPABLE_INPUT_TYPES = [
   'button', 'submit', 'reset', 'image',
-  'checkbox', 'radio', 'range', 'color', 'file',
-  'datetime-local', 'date', 'time', 'month', 'week'
+  'checkbox', 'radio', 'range', 'color', 'file'
 ]
 CLASSNAME_ROOT = 'KEYJUMP'
 CLASSNAME_HINT = 'KEYJUMP_hint'

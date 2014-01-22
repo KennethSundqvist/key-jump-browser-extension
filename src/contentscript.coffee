@@ -22,14 +22,14 @@ KNOWN_NON_TYPABLE_INPUT_TYPES = [
   'checkbox', 'radio', 'range', 'color', 'file',
   'datetime-local', 'date', 'time', 'month', 'week'
 ]
-CLASSNAME_PARENT = 'KEYJUMP'
+CLASSNAME_ROOT = 'KEYJUMP'
 CLASSNAME_HINT = 'KEYJUMP_hint'
 CLASSNAME_MATCH = 'KEYJUMP_match'
 
 d = document
 active = false
-hintsParentEl = d.createElement 'div'
-hintsParentEl.classList.add CLASSNAME_PARENT
+hintsRootEl = d.createElement 'div'
+hintsRootEl.classList.add CLASSNAME_ROOT
 hintSourceEl = d.createElement 'div'
 hintSourceEl.classList.add CLASSNAME_HINT
 hints = null
@@ -59,7 +59,7 @@ activate = ->
 
   for hintKey, hint of hints
     hint.el.innerHTML = hintKey
-    hintsParentEl.appendChild hint.el
+    hintsRootEl.appendChild hint.el
     top = Math.max(0, hint.target.offsetTop)
     left = Math.max(0, hint.target.offsetLeft - hint.el.offsetWidth - 2)
     hint.el.style.top = top + 'px'
@@ -72,7 +72,7 @@ activate = ->
 deactivate = ->
   active = false
   hints = null
-  hintsParentEl.removeChild hintsParentEl.firstChild while hintsParentEl.firstChild
+  hintsRootEl.removeChild hintsRootEl.firstChild while hintsRootEl.firstChild
   query = null
   return
 
@@ -118,5 +118,5 @@ handleKeyboardEvent = (event) ->
 
 # Init
 
-d.body.appendChild hintsParentEl
+d.body.appendChild hintsRootEl
 d.addEventListener 'keydown', handleKeyboardEvent, true

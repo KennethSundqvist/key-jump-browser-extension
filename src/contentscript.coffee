@@ -91,8 +91,7 @@ selectHints = (event) ->
   return
 
 triggerHintMatch = (event) ->
-  tag = hintMatch.target.tagName.toLocaleLowerCase()
-  if tag == 'select' || canTypeInElement hintMatch.target
+  if shouldFocusElement hintMatch.target
     hintMatch.target.focus()
   else
     clickEvent = new MouseEvent 'click',
@@ -113,6 +112,13 @@ canTypeInElement = (el) ->
   el.contentEditable == 'true' ||
     tag == 'textarea' ||
     (tag == 'input' && inputType not in KNOWN_NON_TYPABLE_INPUT_TYPES)
+
+shouldFocusElement = (el) ->
+  tag = el.tagName.toLocaleLowerCase()
+  inputType = el.getAttribute 'type'
+  canTypeInElement(el) ||
+    tag == 'select' ||
+    (tag == 'input' && inputType == 'range')
 
 handleKeyboardEvent = (event) ->
   hasModifier = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey

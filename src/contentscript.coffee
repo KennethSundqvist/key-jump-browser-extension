@@ -66,8 +66,6 @@ activate = ->
     left = Math.max(0, Math.round(targetPos.left) - hint.el.offsetWidth - 2)
     hint.el.style.top = top + 'px'
     hint.el.style.left = left + 'px'
-    if top == 0 and left == 0
-      console.log 'Hint at 0x0 pos', hint, targetPos
 
   return
 

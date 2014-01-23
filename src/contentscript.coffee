@@ -25,6 +25,7 @@ CLASSNAME_ROOT = 'KEYJUMP'
 CLASSNAME_HINT = 'KEYJUMP_hint'
 CLASSNAME_MATCH = 'KEYJUMP_match'
 
+w = window
 d = document
 active = false
 hintsRootEl = d.createElement 'div'
@@ -47,24 +48,26 @@ activate = ->
   hintPrefixPos = 0
   hintPos = 0
   for target in targetEls
-    hintId = hintPrefix + HINT_CHARACTERS[hintPos++]
-    hints[hintId] =
-      id: hintId
-      el: hintSourceEl.cloneNode true
-      target: target
-    if hintPos == HINT_CHARACTERS.length
-      hintPos = 0
-      hintPrefix = HINT_CHARACTERS[hintPrefixPos++]
+    if isElementVisible target
+      hintId = hintPrefix + HINT_CHARACTERS[hintPos++]
+      hints[hintId] =
+        id: hintId
+        el: hintSourceEl.cloneNode true
+        target: target
+      if hintPos == HINT_CHARACTERS.length
+        hintPos = 0
+        hintPrefix = HINT_CHARACTERS[hintPrefixPos++]
 
   for hintKey, hint of hints
     hint.el.innerHTML = hintKey
     hintsRootEl.appendChild hint.el
-    top = Math.max(0, hint.target.offsetTop)
-    left = Math.max(0, hint.target.offsetLeft - hint.el.offsetWidth - 2)
+    targetPos = getElementPos(hint.target)
+    top = Math.max(0, Math.round(targetPos.top))
+    left = Math.max(0, Math.round(targetPos.left) - hint.el.offsetWidth - 2)
     hint.el.style.top = top + 'px'
     hint.el.style.left = left + 'px'
     if top == 0 and left == 0
-      console.log 'Hint at 0x0 pos', hint
+      console.log 'Hint at 0x0 pos', hint, targetPos
 
   return
 
@@ -119,6 +122,35 @@ shouldFocusElement = (el) ->
   canTypeInElement(el) ||
     tag == 'select' ||
     (tag == 'input' && inputType == 'range')
+
+getElementPos = (el) ->
+  rect = el.getBoundingClientRect()
+  scrollTop = window.scrollY
+  scrollLeft = window.scrollX
+  return {
+    top: rect.top + scrollTop
+    bottom: rect.bottom + scrollTop
+    right: rect.right + scrollLeft
+    left: rect.left + scrollLeft
+  }
+
+isElementVisible = (el) ->
+  rect = el.getBoundingClientRect()
+  if rect.width <= 0 ||
+    rect.height <= 0 ||
+    rect.top >= w.innerHeight ||
+    rect.left >= w.innerWidth ||
+    rect.bottom <= 0 ||
+    rect.right <= 0
+      return false
+  while el
+    styles = w.getComputedStyle el
+    if styles.display == 'none' ||
+      styles.visibility == 'hidden' ||
+      styles.opacity == '0'
+        return false
+    el = el.parentElement
+  true
 
 handleKeyboardEvent = (event) ->
   hasModifier = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey

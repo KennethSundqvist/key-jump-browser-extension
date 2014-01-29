@@ -4,6 +4,8 @@
     "name": "Key Jump",
     "description": "Use your keyboard to click on links and form controls.",
     "version": "$version",
+    "author": "Kenneth Sundqvist <eviloatmeal@gmail.com>",
+    "homepage_url": "http://eviloatmeal.se/key-jump/",
 
     "content_scripts": [{
         "matches": ["*://*/*", "ftp://*/*"],

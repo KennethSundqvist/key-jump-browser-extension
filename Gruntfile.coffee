@@ -12,6 +12,13 @@ module.exports = (grunt) ->
         options:
           process: (content) ->
             content.replace '$version', packageJSON.version
+      icons:
+        files: [{
+          expand: true,
+          cwd: 'src/',
+          src: 'icon*.png',
+          dest: 'dist'
+        }]
 
     sass:
       options:
@@ -47,7 +54,7 @@ module.exports = (grunt) ->
 
     watch:
       copy:
-        files: 'src/manifest.json',
+        files: ['src/manifest.json', 'src/icon*.png'],
         tasks: 'copy'
       sass:
         files: 'src/*.sass',

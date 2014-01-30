@@ -2,6 +2,10 @@ $color_hint: #ee5757
 
 $zindex_hint: 9999999999
 
+$shadow_highlight: inset rgba(255, 255, 255, 0.35) 0 1px 0
+$shadow_drop: rgba(0, 0, 0, 0.28) 0 1px 2px
+$shadow_drop_match: rgba(0, 0, 0, 0.35) 0 1px 4px
+
 .KEYJUMP
   transition: opacity 0.2s
   opacity: 0
@@ -21,7 +25,7 @@ $zindex_hint: 9999999999
   background: $color_hint
   border: 1px solid $color_hint - #333
   border-radius: 2px
-  box-shadow: inset rgba(255, 255, 255, 0.35) 0 1px 0, rgba(0, 0, 0, 0.28) 0 1px 2px
+  box-shadow: $shadow_highlight, $shadow_drop
   font: 13px/1 "Helvetica Neue", Helvetica, Arial, sans-serif
   letter-spacing: 1px
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2)
@@ -31,4 +35,4 @@ $zindex_hint: 9999999999
   transition-timing-function: cubic-bezier(.08, 1.7, .71, 2)
   transform: scale(1.4)
   z-index: $zindex_hint + 1
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35)
+  box-shadow: $shadow_highlight, $shadow_drop_match

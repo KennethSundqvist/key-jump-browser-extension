@@ -8,7 +8,7 @@ module.exports = (grunt) ->
     copy:
       manifest:
         src: 'src/manifest.json',
-        dest: 'dist/manifest.json',
+        dest: 'build/manifest.json',
         options:
           process: (content) ->
             content.replace '$version', packageJSON.version
@@ -17,7 +17,7 @@ module.exports = (grunt) ->
           expand: true,
           cwd: 'src/',
           src: 'icon*.png',
-          dest: 'dist'
+          dest: 'build'
         }]
 
     sass:
@@ -31,7 +31,7 @@ module.exports = (grunt) ->
           expand: true,
           cwd: 'src/',
           src: '**/*.sass',
-          dest: 'dist',
+          dest: 'build',
           ext: '.css'
         }]
 
@@ -43,14 +43,20 @@ module.exports = (grunt) ->
           expand: true,
           cwd: 'src/',
           src: '**/*.coffee',
-          dest: 'dist',
+          dest: 'build',
           ext: '.js'
         }]
 
     autoprefixer:
       options: ['last 2 versions']
       dist:
-        src: 'dist/*.css'
+        src: 'build/*.css'
+
+    zip:
+      dist:
+        cwd: 'build/',
+        src: 'build/**/*',
+        dest: 'dist/key-jump-' + packageJSON.version + '.zip'
 
     watch:
       copy:
@@ -63,7 +69,7 @@ module.exports = (grunt) ->
         files: 'src/*.coffee',
         tasks: 'coffee'
       autoprefixer:
-        files: 'dist/*.css',
+        files: 'build/*.css',
         tasks: 'autoprefixer'
   })
 
@@ -72,8 +78,9 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-autoprefixer'
   grunt.loadNpmTasks 'grunt-contrib-watch'
+  grunt.loadNpmTasks 'grunt-zip'
 
-  grunt.registerTask 'default', ['copy', 'sass', 'coffee', 'autoprefixer']
+  grunt.registerTask 'default', ['copy', 'sass', 'coffee', 'autoprefixer', 'zip']
   grunt.registerTask 'dist', 'default'
   grunt.registerTask 'd', 'dist'
   grunt.registerTask 'w', 'watch'

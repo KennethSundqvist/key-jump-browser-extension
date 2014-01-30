@@ -2,7 +2,7 @@
     "manifest_version": 2,
 
     "name": "Key Jump",
-    "description": "Use your keyboard to click on links and form controls.",
+    "description": "Use your keyboard to click on links and stuff.",
     "version": "$version",
     "author": "Kenneth Sundqvist <eviloatmeal@gmail.com>",
     "homepage_url": "http://eviloatmeal.se/key-jump/",

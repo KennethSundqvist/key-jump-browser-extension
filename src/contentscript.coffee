@@ -62,7 +62,13 @@ activate = ->
     hint.el.innerHTML = hintKey
     hintsRootEl.appendChild hint.el
     targetPos = getElementPos(hint.target)
-    top = Math.max(0, Math.min(Math.round(targetPos.top), w.innerHeight - hint.el.offsetHeight))
+    top = Math.max(
+      0,
+      Math.min(
+        Math.round(targetPos.top),
+        (w.innerHeight + d.documentElement.scrollTop) - hint.el.offsetHeight
+      )
+    )
     left = Math.max(0, Math.round(targetPos.left) - hint.el.offsetWidth - 2)
     hint.el.style.top = top + 'px'
     hint.el.style.left = left + 'px'

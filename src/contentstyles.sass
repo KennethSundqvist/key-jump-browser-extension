@@ -2,6 +2,14 @@ $color_hint: #ee5757
 
 $zindex_hint: 9999999999
 
+.KEYJUMP
+  transition: opacity 0.2s
+  opacity: 0
+  pointer-events: none
+
+.KEYJUMP_active
+  opacity: 1
+
 .KEYJUMP_hint
   transition-property: transform, box-shadow
   transition-duration: 0.2s
@@ -17,7 +25,6 @@ $zindex_hint: 9999999999
   font: 13px/1 "Helvetica Neue", Helvetica, Arial, sans-serif
   letter-spacing: 1px
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2)
-  pointer-events: none
 
 .KEYJUMP_match
   transition-duration: 0.17s

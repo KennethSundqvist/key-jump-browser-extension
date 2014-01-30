@@ -22,6 +22,7 @@ KNOWN_NON_TYPABLE_INPUT_TYPES = [
   'checkbox', 'radio', 'range', 'color', 'file'
 ]
 CLASSNAME_ROOT = 'KEYJUMP'
+CLASSNAME_ACTIVE = 'KEYJUMP_active'
 CLASSNAME_HINT = 'KEYJUMP_hint'
 CLASSNAME_MATCH = 'KEYJUMP_match'
 
@@ -34,12 +35,17 @@ hintSourceEl = d.createElement 'div'
 hintSourceEl.classList.add CLASSNAME_HINT
 hints = null
 hintMatch = undefined
+removeHintsTimeout = null
 query = null
 targetEls = null
 
 activate = ->
   hints = {}
   query = ''
+
+  clearTimeout removeHintsTimeout
+  removeHints()
+
   targetEls = d.querySelectorAll TARGET_ELEMENTS
 
   if targetEls.length then active = true else return
@@ -73,12 +79,17 @@ activate = ->
     hint.el.style.top = top + 'px'
     hint.el.style.left = left + 'px'
 
+  hintsRootEl.classList.add CLASSNAME_ACTIVE
+
   return
 
 deactivate = ->
+  if !active then return
+  timeoutDuration = parseFloat(w.getComputedStyle(hintsRootEl).transitionDuration) * 1000
   active = false
   hints = null
-  hintsRootEl.removeChild hintsRootEl.firstChild while hintsRootEl.firstChild
+  hintsRootEl.classList.remove CLASSNAME_ACTIVE
+  removeHintsTimeout = setTimeout removeHints, timeoutDuration
   query = null
   return
 
@@ -96,6 +107,9 @@ selectHints = (event) ->
   if hintMatch then hintMatch.el.classList.add CLASSNAME_MATCH
 
   return
+
+removeHints = ->
+  hintsRootEl.removeChild hintsRootEl.firstChild while hintsRootEl.firstChild
 
 triggerHintMatch = (event) ->
   if shouldFocusElement hintMatch.target

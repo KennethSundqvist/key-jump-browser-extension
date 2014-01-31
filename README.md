@@ -1,6 +1,6 @@
 # Key Jump Chrome Extension
 
-Use your keyboard to click on links and stuff.
+Click on links and stuff with your keyboard.
 
 ## How to use
 

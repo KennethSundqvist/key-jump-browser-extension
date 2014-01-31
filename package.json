@@ -1,7 +1,7 @@
 {
   "name": "key-jump-chrome-extension",
   "version": "1.1.0",
-  "description": "Use your keyboard to click on links and stuff.",
+  "description": "Click on links and stuff with your keyboard.",
   "author": "Kenneth Sundqvist <eviloatmeal@gmail.com> (eviloatmeal.se)",
   "license": "MIT",
   "devDependencies": {

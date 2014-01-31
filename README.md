@@ -2,6 +2,8 @@
 
 Click on links and stuff with your keyboard.
 
-## How to use
-
 ## Install
+
+[Install from the Chrome Web Store](https://chrome.google.com/webstore/detail/key-jump/afdjhbmagopjlalgcjfclkgobaafamck)
+
+## How to use

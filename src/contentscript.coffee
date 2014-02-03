@@ -1,5 +1,5 @@
 HINT_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-KEYCODE_PERIOD = 190
+KEYCODE_COMMA = 188
 KEYCODE_ESC = 27
 KEYCODE_RETURN = 13
 KEYCODE_BACKSPACE = 8
@@ -177,7 +177,7 @@ handleKeyboardEvent = (event) ->
       triggerHintMatch event
       event.preventDefault()
     else if !hasModifier
-      if event.keyCode == KEYCODE_PERIOD
+      if event.keyCode == KEYCODE_COMMA
         if active then deactivate() else activate()
         event.preventDefault()
       else if active

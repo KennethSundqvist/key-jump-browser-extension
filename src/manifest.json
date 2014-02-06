@@ -13,6 +13,12 @@
         "128": "icon128.png"
     },
 
+    "permissions": [
+        "storage"
+    ],
+
+    "options_page": "options.html",
+
     "content_scripts": [{
         "matches": ["*://*/*", "ftp://*/*"],
         "all_frames": false,

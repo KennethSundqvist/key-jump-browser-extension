@@ -1,0 +1,32 @@
+doctype html
+html
+  head
+    title Key Jump options
+    link(rel='icon', type='image/png', href='icon16.png')
+    link(rel='stylesheet', href='optionsstyles.css')
+  body
+    h1
+      img(src='icon48.png')
+      |  Key Jump options
+
+    fieldset
+      legend Activation shortcut
+      .formGroup
+        label
+          = 'Key '
+          input(type='text', name='activationChar', maxlength='1', size='1')
+      .formGroup.formGroup-inline
+        label
+          input(type='checkbox', name='activationShift')
+          |  Shift
+        label
+          input(type='checkbox', name='activationCtrl')
+          |  Control
+        label
+          input(type='checkbox', name='activationAlt')
+          |  Alt
+        label
+          input(type='checkbox', name='activationMeta')
+          |  Meta (Command on OS X)
+
+    script(src='optionsscript.js')

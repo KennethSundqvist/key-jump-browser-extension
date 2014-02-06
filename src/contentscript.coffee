@@ -1,5 +1,4 @@
 HINT_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-KEYCODE_COMMA = 188
 KEYCODE_ESC = 27
 KEYCODE_RETURN = 13
 KEYCODE_BACKSPACE = 8
@@ -26,9 +25,16 @@ CLASSNAME_ACTIVE = 'KEYJUMP_active'
 CLASSNAME_HINT = 'KEYJUMP_hint'
 CLASSNAME_MATCH = 'KEYJUMP_match'
 TIMEOUT_REACTIVATE = 300
+DEFAULT_OPTIONS =
+  activationChar: ','
+  activationShift: false
+  activationCtrl: false
+  activationAlt: false
+  activationMeta: false
 
 w = window
 d = document
+options = {}
 firstActivation = true
 active = false
 reactivateTimeout = null
@@ -185,32 +191,45 @@ isElementVisible = (el) ->
     el = el.parentElement
   true
 
+isActivationKey = (event) ->
+  char = JSON.parse('"' + (event.keyIdentifier).replace('U+', '\\u') + '"').toLowerCase()
+  char == options.activationChar &&
+    event.shiftKey == options.activationShift &&
+    event.ctrlKey == options.activationCtrl &&
+    event.altKey == options.activationAlt &&
+    event.metaKey == options.activationMeta
+
 handleKeyboardEvent = (event) ->
   hasModifier = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey
   if !canTypeInElement d.activeElement
     if event.keyCode == KEYCODE_RETURN && hintMatch
       triggerHintMatch event
       stopKeyboardEvent event
-    else if !hasModifier
-      if event.keyCode == KEYCODE_COMMA
-        if active then deactivate() else activate()
+    else if isActivationKey event
+      if active then deactivate() else activate()
+      stopKeyboardEvent event
+    else if !hasModifier && active
+      if event.keyCode == KEYCODE_ESC
+        deactivate()
         stopKeyboardEvent event
-      else if active
-        if event.keyCode == KEYCODE_ESC
-          deactivate()
-          stopKeyboardEvent event
-        else selectHints event
+      else selectHints event
   return
 
 stopKeyboardEvent = (event) ->
   event.preventDefault()
   event.stopPropagation()
   event.stopImmediatePropagation()
+  return
 
 setReactivationTimeout = () ->
   clearTimeout reactivateTimeout
   reactivateTimeout = setTimeout activate, TIMEOUT_REACTIVATE
+  return
 
 # Init
 
-d.addEventListener 'keydown', handleKeyboardEvent, true
+chrome.storage.sync.get Object.keys(DEFAULT_OPTIONS), (storageOptions) ->
+  for own key, value of DEFAULT_OPTIONS
+    options[key] = if storageOptions.hasOwnProperty key then storageOptions[key] else value
+  d.addEventListener 'keydown', handleKeyboardEvent, true
+  return

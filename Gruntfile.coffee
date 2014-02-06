@@ -47,6 +47,16 @@ module.exports = (grunt) ->
           ext: '.js'
         }]
 
+    jade:
+      dist:
+        files: [{
+          expand: true,
+          cwd: 'src/',
+          src: '**/*.jade',
+          dest: 'build',
+          ext: '.html'
+        }]
+
     autoprefixer:
       options: ['last 2 versions']
       dist:
@@ -68,6 +78,9 @@ module.exports = (grunt) ->
       coffee:
         files: 'src/*.coffee',
         tasks: 'coffee'
+      jade:
+        files: 'src/*.jade',
+        tasks: 'jade'
       autoprefixer:
         files: 'build/*.css',
         tasks: 'autoprefixer'
@@ -76,11 +89,12 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-copy'
   grunt.loadNpmTasks 'grunt-contrib-sass'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
+  grunt.loadNpmTasks 'grunt-contrib-jade'
   grunt.loadNpmTasks 'grunt-autoprefixer'
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-zip'
 
-  grunt.registerTask 'default', ['copy', 'sass', 'coffee', 'autoprefixer', 'zip']
+  grunt.registerTask 'default', ['copy', 'sass', 'coffee', 'jade', 'autoprefixer', 'zip']
   grunt.registerTask 'dist', 'default'
   grunt.registerTask 'd', 'dist'
   grunt.registerTask 'w', 'watch'

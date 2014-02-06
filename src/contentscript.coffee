@@ -58,7 +58,8 @@ activate = ->
   if targetEls.length
     if !active
       active = true
-      d.addEventListener 'scroll', handleScrollEvent, false
+      d.addEventListener 'scroll', setReactivationTimeout, false
+      w.addEventListener 'popstate', setReactivationTimeout, false
   else return
 
   hintPrefix = ''
@@ -96,7 +97,8 @@ activate = ->
 
 deactivate = ->
   if !active then return
-  d.removeEventListener 'scroll', handleScrollEvent, false
+  d.removeEventListener 'scroll', setReactivationTimeout, false
+  w.removeEventListener 'popstate', setReactivationTimeout, false
   clearTimeout reactivateTimeout
   timeoutDuration = parseFloat(w.getComputedStyle(hintsRootEl).transitionDuration) * 1000
   active = false
@@ -205,7 +207,7 @@ stopKeyboardEvent = (event) ->
   event.stopPropagation()
   event.stopImmediatePropagation()
 
-handleScrollEvent = () ->
+setReactivationTimeout = () ->
   clearTimeout reactivateTimeout
   reactivateTimeout = setTimeout activate, TIMEOUT_REACTIVATE
 

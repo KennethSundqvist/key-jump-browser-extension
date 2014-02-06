@@ -100,9 +100,8 @@
     var color = 0;
     var colors = ['#faa', '#afa'];
     var visualisingEl = d.getElementById('prevent-event-visualizer');
-    d.addEventListener('keydown', function(event) {
+    d.addEventListener('keydown', function() {
       visualisingEl.style.background = colors[color = 1 - color];
-      console.log('prevent this', event);
     }, true);
   })(document);
 </script>

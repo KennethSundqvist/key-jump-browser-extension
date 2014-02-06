@@ -16,7 +16,7 @@
     "content_scripts": [{
         "matches": ["*://*/*", "ftp://*/*"],
         "all_frames": false,
-        "run_at": "document_end",
+        "run_at": "document_start",
         "js": ["contentscript.js"],
         "css": ["contentstyles.css"]
     }]

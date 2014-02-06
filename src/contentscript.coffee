@@ -28,6 +28,7 @@ CLASSNAME_MATCH = 'KEYJUMP_match'
 
 w = window
 d = document
+firstActivation = true
 active = false
 hintsRootEl = d.createElement 'div'
 hintsRootEl.classList.add CLASSNAME_ROOT
@@ -42,6 +43,10 @@ targetEls = null
 activate = ->
   hints = {}
   query = ''
+
+  if firstActivation
+    d.body.appendChild hintsRootEl
+    firstActivation = false
 
   clearTimeout removeHintsTimeout
   removeHints()
@@ -190,5 +195,4 @@ stopKeyboardEvent = (event) ->
 
 # Init
 
-d.body.appendChild hintsRootEl
 d.addEventListener 'keydown', handleKeyboardEvent, true

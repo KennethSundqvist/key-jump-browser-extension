@@ -100,15 +100,15 @@ deactivate = ->
 
 selectHints = (event) ->
   char = String.fromCharCode event.keyCode
+  prevQuery = query
   if event.keyCode == KEYCODE_BACKSPACE
     query = query.slice 0, -1
-  else if HINT_CHARACTERS.indexOf(char) > -1
+  else if HINT_CHARACTERS.indexOf(char) > -1 and hints[query + char]
     query += char
-
-  if hintMatch then hintMatch.el.classList.remove CLASSNAME_MATCH
-  hintMatch = hints[query]
-  if hintMatch then hintMatch.el.classList.add CLASSNAME_MATCH
-
+  if query != prevQuery
+    if hintMatch then hintMatch.el.classList.remove CLASSNAME_MATCH
+    hintMatch = hints[query]
+    if hintMatch then hintMatch.el.classList.add CLASSNAME_MATCH
   return
 
 removeHints = ->

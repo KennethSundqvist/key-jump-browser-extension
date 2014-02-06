@@ -1,6 +1,6 @@
 $color_hint: #ee5757
 
-$zindex_hint: 9999999999
+$zindex: 99999999
 
 $shadow_highlight: inset rgba(255, 255, 255, 0.35) 0 1px 0
 $shadow_drop: rgba(0, 0, 0, 0.28) 0 1px 2px
@@ -8,6 +8,10 @@ $shadow_drop_match: rgba(0, 0, 0, 0.35) 0 1px 4px
 
 .KEYJUMP
   transition: opacity 0.2s
+  position: absolute
+  top: 0
+  left: 0
+  z-index: $zindex
   opacity: 0
   pointer-events: none
 
@@ -19,7 +23,6 @@ $shadow_drop_match: rgba(0, 0, 0, 0.35) 0 1px 4px
   transition-duration: 0.2s
   transition-timing-function: ease-out
   position: absolute
-  z-index: $zindex_hint
   padding: 2px 3px
   color: #fff
   background: $color_hint
@@ -34,5 +37,5 @@ $shadow_drop_match: rgba(0, 0, 0, 0.35) 0 1px 4px
   transition-duration: 0.17s
   transition-timing-function: cubic-bezier(.08, 1.7, .71, 2)
   transform: scale(1.4)
-  z-index: $zindex_hint + 1
+  z-index: $zindex + 1
   box-shadow: $shadow_highlight, $shadow_drop_match

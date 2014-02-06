@@ -25,11 +25,13 @@ CLASSNAME_ROOT = 'KEYJUMP'
 CLASSNAME_ACTIVE = 'KEYJUMP_active'
 CLASSNAME_HINT = 'KEYJUMP_hint'
 CLASSNAME_MATCH = 'KEYJUMP_match'
+TIMEOUT_REACTIVATE = 300
 
 w = window
 d = document
 firstActivation = true
 active = false
+reactivateTimeout = null
 hintsRootEl = d.createElement 'div'
 hintsRootEl.classList.add CLASSNAME_ROOT
 hintSourceEl = d.createElement 'div'
@@ -53,7 +55,11 @@ activate = ->
 
   targetEls = d.querySelectorAll TARGET_ELEMENTS
 
-  if targetEls.length then active = true else return
+  if targetEls.length
+    if !active
+      active = true
+      d.addEventListener 'scroll', handleScrollEvent, false
+  else return
 
   hintPrefix = ''
   hintPrefixPos = 0
@@ -90,6 +96,8 @@ activate = ->
 
 deactivate = ->
   if !active then return
+  d.removeEventListener 'scroll', handleScrollEvent, false
+  clearTimeout reactivateTimeout
   timeoutDuration = parseFloat(w.getComputedStyle(hintsRootEl).transitionDuration) * 1000
   active = false
   hints = null
@@ -103,8 +111,10 @@ selectHints = (event) ->
   prevQuery = query
   if event.keyCode == KEYCODE_BACKSPACE
     query = query.slice 0, -1
+    stopKeyboardEvent event
   else if HINT_CHARACTERS.indexOf(char) > -1 and hints[query + char]
     query += char
+    stopKeyboardEvent event
   if query != prevQuery
     if hintMatch then hintMatch.el.classList.remove CLASSNAME_MATCH
     hintMatch = hints[query]
@@ -184,14 +194,20 @@ handleKeyboardEvent = (event) ->
         if active then deactivate() else activate()
         stopKeyboardEvent event
       else if active
-        stopKeyboardEvent event
-        if event.keyCode == KEYCODE_ESC then deactivate() else selectHints event
+        if event.keyCode == KEYCODE_ESC
+          deactivate()
+          stopKeyboardEvent event
+        else selectHints event
   return
 
 stopKeyboardEvent = (event) ->
   event.preventDefault()
   event.stopPropagation()
   event.stopImmediatePropagation()
+
+handleScrollEvent = () ->
+  clearTimeout reactivateTimeout
+  reactivateTimeout = setTimeout activate, TIMEOUT_REACTIVATE
 
 # Init
 

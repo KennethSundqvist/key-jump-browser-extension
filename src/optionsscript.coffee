@@ -4,6 +4,11 @@ DEFAULT_OPTIONS =
   activationCtrl: false
   activationAlt: false
   activationMeta: false
+  keepHintsAfterTrigger: false
+  keepHintsAfterTriggerShift: false
+  keepHintsAfterTriggerCtrl: false
+  keepHintsAfterTriggerAlt: false
+  keepHintsAfterTriggerMeta: false
 
 d = document
 optionEls = d.querySelectorAll 'input'

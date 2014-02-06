@@ -29,4 +29,24 @@ html
           input(type='checkbox', name='activationMeta')
           |  Meta (Command on OS X)
 
-    script(src='optionsscript.js')
+    fieldset
+      .formGroup
+        label
+          input(type='checkbox', name='keepHintsAfterTrigger')
+          |  Stay in hint mode after triggering a hint
+      .formGroup.formGroup-inline
+        p Only when I press these while triggering:
+        label
+          input(type='checkbox', name='keepHintsAfterTriggerShift')
+          |  Shift
+        label
+          input(type='checkbox', name='keepHintsAfterTriggerCtrl')
+          |  Control
+        label
+          input(type='checkbox', name='keepHintsAfterTriggerAlt')
+          |  Alt
+        label
+          input(type='checkbox', name='keepHintsAfterTriggerMeta')
+          |  Meta (Command on OS X)
+
+  script(src='optionsscript.js')

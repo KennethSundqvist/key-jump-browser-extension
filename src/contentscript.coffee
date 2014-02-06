@@ -31,6 +31,11 @@ DEFAULT_OPTIONS =
   activationCtrl: false
   activationAlt: false
   activationMeta: false
+  keepHintsAfterTrigger: false
+  keepHintsAfterTriggerShift: false
+  keepHintsAfterTriggerCtrl: false
+  keepHintsAfterTriggerAlt: false
+  keepHintsAfterTriggerMeta: false
 
 w = window
 d = document
@@ -145,7 +150,13 @@ triggerHintMatch = (event) ->
       altKey:   event.altKey
       metaKey:  event.metaKey
     hintMatch.target.dispatchEvent clickEvent
-  deactivate()
+  if options.keepHintsAfterTrigger &&
+      event.shiftKey == options.keepHintsAfterTriggerShift &&
+      event.ctrlKey == options.keepHintsAfterTriggerCtrl &&
+      event.altKey == options.keepHintsAfterTriggerAlt &&
+      event.metaKey == options.keepHintsAfterTriggerMeta
+    activate()
+  else deactivate()
   return
 
 canTypeInElement = (el) ->

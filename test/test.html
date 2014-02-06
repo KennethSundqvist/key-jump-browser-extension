@@ -20,6 +20,8 @@
   Key Jump testing
 </h1>
 
+<div id="prevent-event-visualizer">This should not change background color when a key is pressed and Key Jump is active or a related shortcut is pressed.</div>
+
 <div class="clearfix">
   <div class="col">
     <h2>Find these</h2>
@@ -84,13 +86,25 @@
 <div id="manyManyLinks"></div>
 
 <script>
+  // Generate many links
   (function(d) {
     var numberOfLinks = 2000;
     var linkHtml = '<a href="#">link</a> &nbsp; &nbsp; &nbsp; &nbsp;';
     var manyHtml = '';
     do { manyHtml += linkHtml } while (numberOfLinks--);
     d.getElementById('manyManyLinks').innerHTML = manyHtml;
-  })(document)
+  })(document);
+
+  // Set up an event that should be prevented when matching hints
+  (function(d) {
+    var color = 0;
+    var colors = ['#faa', '#afa'];
+    var visualisingEl = d.getElementById('prevent-event-visualizer');
+    d.addEventListener('keydown', function(event) {
+      visualisingEl.style.background = colors[color = 1 - color];
+      console.log('prevent this', event);
+    }, true);
+  })(document);
 </script>
 
 </body>

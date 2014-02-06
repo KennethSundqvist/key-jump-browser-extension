@@ -96,10 +96,8 @@ deactivate = ->
 selectHints = (event) ->
   char = String.fromCharCode event.keyCode
   if event.keyCode == KEYCODE_BACKSPACE
-    event.preventDefault()
     query = query.slice 0, -1
   else if HINT_CHARACTERS.indexOf(char) > -1
-    event.preventDefault()
     query += char
 
   if hintMatch then hintMatch.el.classList.remove CLASSNAME_MATCH
@@ -175,17 +173,20 @@ handleKeyboardEvent = (event) ->
   if !canTypeInElement d.activeElement
     if event.keyCode == KEYCODE_RETURN && hintMatch
       triggerHintMatch event
-      event.preventDefault()
+      stopKeyboardEvent event
     else if !hasModifier
       if event.keyCode == KEYCODE_COMMA
         if active then deactivate() else activate()
-        event.preventDefault()
+        stopKeyboardEvent event
       else if active
-        if event.keyCode == KEYCODE_ESC
-          deactivate()
-          event.preventDefault()
-        else selectHints event
+        stopKeyboardEvent event
+        if event.keyCode == KEYCODE_ESC then deactivate() else selectHints event
   return
+
+stopKeyboardEvent = (event) ->
+  event.preventDefault()
+  event.stopPropagation()
+  event.stopImmediatePropagation()
 
 # Init
 

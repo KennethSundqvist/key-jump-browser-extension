@@ -133,10 +133,13 @@ removeHints = ->
   hintsRootEl.removeChild hintsRootEl.firstChild while hintsRootEl.firstChild
 
 triggerHintMatch = (event) ->
+  el = hintMatch.target
+  tagName = el.tagName.toLocaleLowerCase()
+  mouseEventType = if tagName == 'select' then 'mousedown' else 'click'
   if shouldFocusElement hintMatch.target
     hintMatch.target.focus()
   else
-    clickEvent = new MouseEvent 'click',
+    clickEvent = new MouseEvent mouseEventType,
       view: window
       bubbles: true
       cancelable: true
@@ -164,9 +167,7 @@ canTypeInElement = (el) ->
 shouldFocusElement = (el) ->
   tag = el.tagName.toLocaleLowerCase()
   inputType = el.getAttribute 'type'
-  canTypeInElement(el) ||
-    tag == 'select' ||
-    (tag == 'input' && inputType == 'range')
+  canTypeInElement el  || (tag == 'input' && inputType == 'range')
 
 getElementPos = (el) ->
   rect = el.getBoundingClientRect()

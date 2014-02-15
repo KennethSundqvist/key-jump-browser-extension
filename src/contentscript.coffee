@@ -1,7 +1,6 @@
 HINT_CHARACTERS = '1234567890'
 KEYCODE_ESC = 27
 KEYCODE_RETURN = 13
-KEYCODE_BACKSPACE = 8
 TARGET_ELEMENTS = """
 a[href],
 input:not([disabled]):not([type=hidden]),
@@ -117,10 +116,7 @@ deactivate = ->
 selectHints = (event) ->
   char = String.fromCharCode event.keyCode
   prevQuery = query
-  if event.keyCode == KEYCODE_BACKSPACE
-    query = query.slice 0, -1
-    stopKeyboardEvent event
-  else if HINT_CHARACTERS.indexOf(char) > -1
+  if HINT_CHARACTERS.indexOf(char) > -1
     stopKeyboardEvent event
     if hints[query + char] then query += char
   if query != prevQuery

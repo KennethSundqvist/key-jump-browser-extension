@@ -158,16 +158,16 @@ triggerHintMatch = (event) ->
   return
 
 canTypeInElement = (el) ->
-  tag = el.tagName.toLocaleLowerCase()
+  tagName = el.tagName.toLocaleLowerCase()
   inputType = el.getAttribute 'type'
   el.contentEditable == 'true' ||
-    tag == 'textarea' ||
-    (tag == 'input' && inputType not in KNOWN_NON_TYPABLE_INPUT_TYPES)
+    tagName == 'textarea' ||
+    (tagName == 'input' && inputType not in KNOWN_NON_TYPABLE_INPUT_TYPES)
 
 shouldFocusElement = (el) ->
-  tag = el.tagName.toLocaleLowerCase()
+  tagName = el.tagName.toLocaleLowerCase()
   inputType = el.getAttribute 'type'
-  canTypeInElement el  || (tag == 'input' && inputType == 'range')
+  canTypeInElement el  || (tagName == 'input' && inputType == 'range')
 
 getElementPos = (el) ->
   rect = el.getBoundingClientRect()

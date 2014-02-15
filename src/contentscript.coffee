@@ -1,4 +1,4 @@
-HINT_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+HINT_CHARACTERS = '1234567890'
 KEYCODE_ESC = 27
 KEYCODE_RETURN = 13
 KEYCODE_BACKSPACE = 8
@@ -56,6 +56,7 @@ targetEls = null
 activate = ->
   hints = {}
   query = ''
+  hintId = 0
 
   if firstActivation
     d.body.appendChild hintsRootEl
@@ -73,19 +74,13 @@ activate = ->
       w.addEventListener 'popstate', setReactivationTimeout, false
   else return
 
-  hintPrefix = ''
-  hintPrefixPos = 0
-  hintPos = 0
   for target in targetEls
     if isElementVisible target
-      hintId = hintPrefix + HINT_CHARACTERS[hintPos++]
+      hintId++
       hints[hintId] =
         id: hintId
         el: hintSourceEl.cloneNode true
         target: target
-      if hintPos == HINT_CHARACTERS.length
-        hintPos = 0
-        hintPrefix = HINT_CHARACTERS[hintPrefixPos++]
 
   for hintKey, hint of hints
     hint.el.innerHTML = hintKey
@@ -125,9 +120,9 @@ selectHints = (event) ->
   if event.keyCode == KEYCODE_BACKSPACE
     query = query.slice 0, -1
     stopKeyboardEvent event
-  else if HINT_CHARACTERS.indexOf(char) > -1 and hints[query + char]
-    query += char
+  else if HINT_CHARACTERS.indexOf(char) > -1
     stopKeyboardEvent event
+    if hints[query + char] then query += char
   if query != prevQuery
     if hintMatch then hintMatch.el.classList.remove CLASSNAME_MATCH
     hintMatch = hints[query]

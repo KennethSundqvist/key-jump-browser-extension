@@ -113,16 +113,19 @@ deactivate = ->
   query = null
   return
 
-selectHints = (event) ->
+appendToQuery = (event) ->
   char = String.fromCharCode event.keyCode
-  prevQuery = query
   if HINT_CHARACTERS.indexOf(char) > -1
     stopKeyboardEvent event
-    if hints[query + char] then query += char
-  if query != prevQuery
-    if hintMatch then hintMatch.el.classList.remove CLASSNAME_MATCH
-    hintMatch = hints[query]
-    if hintMatch then hintMatch.el.classList.add CLASSNAME_MATCH
+    if hints[query + char]
+      query += char
+      refreshHintsFilter()
+  return
+
+refreshHintsFilter = ->
+  if hintMatch then hintMatch.el.classList.remove CLASSNAME_MATCH
+  hintMatch = hints[query]
+  if hintMatch then hintMatch.el.classList.add CLASSNAME_MATCH
   return
 
 removeHints = ->
@@ -213,9 +216,12 @@ handleKeyboardEvent = (event) ->
       stopKeyboardEvent event
     else if !hasModifier && active
       if event.keyCode == KEYCODE_ESC
-        deactivate()
+        if query
+          query = ''
+          refreshHintsFilter()
+        else deactivate()
         stopKeyboardEvent event
-      else selectHints event
+      else appendToQuery event
   return
 
 stopKeyboardEvent = (event) ->

@@ -110,7 +110,7 @@ deactivate = ->
   timeoutDuration = parseFloat(w.getComputedStyle(hintsRootEl).transitionDuration) * 1000
   active = false
   hints = null
-  hintsRootEl.classList.remove CLASSNAME_ACTIVE, CLASSNAME_FILTERED
+  hintsRootEl.classList.remove CLASSNAME_ACTIVE
   removeHintsTimeout = setTimeout removeHints, timeoutDuration
   query = null
   return
@@ -136,6 +136,7 @@ filterHints = ->
 
 removeHints = ->
   hintsRootEl.removeChild hintsRootEl.firstChild while hintsRootEl.firstChild
+  hintsRootEl.classList.remove CLASSNAME_FILTERED
 
 triggerHintMatch = (event) ->
   el = hintMatch.target

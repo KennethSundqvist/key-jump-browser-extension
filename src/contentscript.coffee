@@ -86,10 +86,10 @@ activate = ->
     hintsRootEl.appendChild hint.el
     targetPos = getElementPos(hint.target)
     top = Math.max(
-      0,
+      d.body.scrollTop,
       Math.min(
         Math.round(targetPos.top),
-        (w.innerHeight + d.documentElement.scrollTop) - hint.el.offsetHeight
+        (w.innerHeight + d.body.scrollTop) - hint.el.offsetHeight
       )
     )
     left = Math.max(0, Math.round(targetPos.left) - hint.el.offsetWidth - 2)

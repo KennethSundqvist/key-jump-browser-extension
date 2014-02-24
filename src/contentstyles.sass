@@ -4,7 +4,6 @@ $zindex: 99999999
 
 $shadow_highlight: inset rgba(255, 255, 255, 0.35) 0 1px 0
 $shadow_drop: rgba(0, 0, 0, 0.28) 0 1px 2px
-$shadow_drop_match: rgba(0, 0, 0, 0.35) 0 1px 4px
 
 .KEYJUMP
   transition: opacity 0.2s
@@ -19,9 +18,7 @@ $shadow_drop_match: rgba(0, 0, 0, 0.35) 0 1px 4px
   opacity: 1
 
 .KEYJUMP_hint
-  transition-property: transform, box-shadow
-  transition-duration: 0.2s
-  transition-timing-function: ease-out
+  transition: opacity 0.2s
   position: absolute
   padding: 2px 3px
   color: #fff
@@ -33,9 +30,8 @@ $shadow_drop_match: rgba(0, 0, 0, 0.35) 0 1px 4px
   letter-spacing: 1px
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2)
 
-.KEYJUMP_match
-  transition-duration: 0.17s
-  transition-timing-function: cubic-bezier(.08, 1.7, .71, 2)
-  transform: scale(1.4)
-  z-index: $zindex + 1
-  box-shadow: $shadow_highlight, $shadow_drop_match
+.KEYJUMP_filtered
+  .KEYJUMP_hint
+    opacity: 0
+  .KEYJUMP_match
+    opacity: 1

@@ -21,6 +21,7 @@ KNOWN_NON_TYPABLE_INPUT_TYPES = [
 ]
 CLASSNAME_ROOT = 'KEYJUMP'
 CLASSNAME_ACTIVE = 'KEYJUMP_active'
+CLASSNAME_FILTERED = 'KEYJUMP_filtered'
 CLASSNAME_HINT = 'KEYJUMP_hint'
 CLASSNAME_MATCH = 'KEYJUMP_match'
 TIMEOUT_REACTIVATE = 300
@@ -82,6 +83,7 @@ activate = ->
         target: target
 
   for hintKey, hint of hints
+    hint.el.setAttribute 'data-hint-id', hintKey
     hint.el.innerHTML = hintKey
     hintsRootEl.appendChild hint.el
     targetPos = getElementPos(hint.target)
@@ -119,13 +121,17 @@ appendToQuery = (event) ->
     stopKeyboardEvent event
     if hints[query + char]
       query += char
-      refreshHintsFilter()
+      filterHints()
   return
 
-refreshHintsFilter = ->
-  if hintMatch then hintMatch.el.classList.remove CLASSNAME_MATCH
+filterHints = ->
   hintMatch = hints[query]
-  if hintMatch then hintMatch.el.classList.add CLASSNAME_MATCH
+  hintsRootEl.classList[if query then 'add' else 'remove'] CLASSNAME_FILTERED
+  for el in hintsRootEl.querySelectorAll '.' + CLASSNAME_MATCH
+    el.classList.remove CLASSNAME_MATCH
+  if query
+    for el in hintsRootEl.querySelectorAll '[data-hint-id^="' + query + '"]'
+      el.classList.add CLASSNAME_MATCH
   return
 
 removeHints = ->
@@ -218,7 +224,7 @@ handleKeyboardEvent = (event) ->
       if event.keyCode == KEYCODE_ESC
         if query
           query = ''
-          refreshHintsFilter()
+          filterHints()
         else deactivate()
         stopKeyboardEvent event
       else appendToQuery event

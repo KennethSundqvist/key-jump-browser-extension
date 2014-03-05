@@ -72,6 +72,12 @@
   </div>
 </div>
 
+<div class="clearfix">
+  <h2>Events</h2>
+
+  <p><input id="dont-run-this-when-focused-with-enter-key"> This input should not lose focus when its hint is triggered using the <kbd>enter</kbd> key.</p>
+</div>
+
 <h2>Many links</h2>
 
 <p>For testing hint labeling and performance.</p>
@@ -79,23 +85,38 @@
 <div id="manyManyLinks"></div>
 
 <script>
-  // Generate many links
   (function(d) {
-    var numberOfLinks = 2000;
-    var linkHtml = '<a href="#">link</a> &nbsp; &nbsp; &nbsp; &nbsp;';
-    var manyHtml = '';
-    do { manyHtml += linkHtml } while (numberOfLinks--);
-    d.getElementById('manyManyLinks').innerHTML = manyHtml;
-  })(document);
+    // Generate many links
+    (function() {
+      var numberOfLinks = 2000;
+      var linkHtml = '<a href="#">link</a> &nbsp; &nbsp; &nbsp; &nbsp;';
+      var manyHtml = '';
+      do { manyHtml += linkHtml } while (numberOfLinks--);
+      d.getElementById('manyManyLinks').innerHTML = manyHtml;
+    })();
 
-  // Set up an event that should be prevented when matching hints
-  (function(d) {
-    var color = 0;
-    var colors = ['#faa', '#afa'];
-    var visualisingEl = d.getElementById('prevent-event-visualizer');
-    d.addEventListener('keydown', function() {
-      visualisingEl.style.background = colors[color = 1 - color];
-    }, true);
+    // Event that should be prevented when matching hints
+    (function() {
+      var color = 0;
+      var colors = ['#faa', '#afa'];
+      var visualisingEl = d.getElementById('prevent-event-visualizer');
+      d.addEventListener('keydown', function() {
+        visualisingEl.style.background = colors[color = 1 - color];
+      }, true);
+    })();
+
+    // Event that should be prevented when focusing an element by
+    // triggering the hint with the enter key
+    (function() {
+      var KEYCODE_RETURN = 13;
+      var el = d.getElementById('dont-run-this-when-focused-with-enter-key');
+      el.addEventListener('keyup', function(event) {
+        if (event.keyCode === KEYCODE_RETURN) {
+          el.blur();
+          console.log('FAILED: dont-run-this-when-focused-with-enter-key');
+        }
+      }, true);
+    })();
   })(document);
 </script>
 

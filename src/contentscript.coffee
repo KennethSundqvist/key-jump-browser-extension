@@ -139,12 +139,12 @@ removeHints = ->
   hintsRootEl.classList.remove CLASSNAME_FILTERED
 
 triggerHintMatch = (event) ->
-  el = hintMatch.target
-  return if !el
-  tagName = el.tagName.toLocaleLowerCase()
+  target = hintMatch.target
+  return if !target
+  tagName = target.tagName.toLocaleLowerCase()
   mouseEventType = if tagName == 'select' then 'mousedown' else 'click'
-  if shouldFocusElement hintMatch.target
-    hintMatch.target.focus()
+  if shouldFocusElement target
+    target.focus()
   else
     clickEvent = new MouseEvent mouseEventType,
       view: window
@@ -154,7 +154,7 @@ triggerHintMatch = (event) ->
       ctrlKey:  event.ctrlKey
       altKey:   event.altKey
       metaKey:  event.metaKey
-    hintMatch.target.dispatchEvent clickEvent
+    target.dispatchEvent clickEvent
   if options.keepHintsAfterTrigger &&
       event.shiftKey == options.keepHintsAfterTriggerShift &&
       event.ctrlKey == options.keepHintsAfterTriggerCtrl &&
@@ -215,11 +215,11 @@ isActivationKey = (event) ->
     event.altKey == options.activationAlt &&
     event.metaKey == options.activationMeta
 
-handleKeyboardEvent = (event) ->
+handleKeydownEvent = (event) ->
   hasModifier = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey
   if !canTypeInElement d.activeElement
     if event.keyCode == KEYCODE_RETURN && hintMatch
-      triggerHintMatch event
+      # Use keyup for triggering, only prevent keydown
       stopKeyboardEvent event
     else if isActivationKey event
       if active then deactivate() else activate()
@@ -232,6 +232,14 @@ handleKeyboardEvent = (event) ->
         else deactivate()
         stopKeyboardEvent event
       else appendToQuery event
+  return
+
+handleKeyupEvent = (event) ->
+  # Use keyup for triggering, because if we focus the target element on keydown
+  # there will be a keyup event on the target element and that's annoying to deal with..
+  if event.keyCode == KEYCODE_RETURN && hintMatch && !canTypeInElement d.activeElement
+    stopKeyboardEvent event
+    triggerHintMatch event
   return
 
 stopKeyboardEvent = (event) ->
@@ -250,5 +258,7 @@ setReactivationTimeout = () ->
 chrome.storage.sync.get Object.keys(DEFAULT_OPTIONS), (storageOptions) ->
   for own key, value of DEFAULT_OPTIONS
     options[key] = if storageOptions.hasOwnProperty key then storageOptions[key] else value
-  d.addEventListener 'keydown', handleKeyboardEvent, true
   return
+
+d.addEventListener 'keydown', handleKeydownEvent, true
+d.addEventListener 'keyup', handleKeyupEvent, true

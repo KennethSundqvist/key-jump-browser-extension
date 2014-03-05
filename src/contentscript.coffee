@@ -48,7 +48,7 @@ hintsRootEl.classList.add CLASSNAME_ROOT
 hintSourceEl = d.createElement 'div'
 hintSourceEl.classList.add CLASSNAME_HINT
 hints = null
-hintMatch = undefined
+hintMatch = null
 removeHintsTimeout = null
 query = null
 targetEls = null
@@ -110,6 +110,7 @@ deactivate = ->
   timeoutDuration = parseFloat(w.getComputedStyle(hintsRootEl).transitionDuration) * 1000
   active = false
   hints = null
+  hintMatch = null
   hintsRootEl.classList.remove CLASSNAME_ACTIVE
   removeHintsTimeout = setTimeout removeHints, timeoutDuration
   query = null
@@ -139,7 +140,7 @@ removeHints = ->
   hintsRootEl.classList.remove CLASSNAME_FILTERED
 
 triggerHintMatch = (event) ->
-  target = hintMatch.target
+  target = hintMatch && hintMatch.target
   return if !target
   tagName = target.tagName.toLocaleLowerCase()
   mouseEventType = if tagName == 'select' then 'mousedown' else 'click'

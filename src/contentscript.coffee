@@ -225,12 +225,7 @@ handleKeydownEvent = (event) ->
       if active then deactivate() else activate()
       stopKeyboardEvent event
     else if !hasModifier && active
-      if event.keyCode == KEYCODE_ESC
-        if query
-          query = ''
-          filterHints()
-        else deactivate()
-        stopKeyboardEvent event
+      if event.keyCode == KEYCODE_ESC then handleEscapeEvent event
       else appendToQuery event
   return
 
@@ -240,6 +235,14 @@ handleKeyupEvent = (event) ->
   if event.keyCode == KEYCODE_RETURN && hintMatch && !canTypeInElement d.activeElement
     stopKeyboardEvent event
     triggerHintMatch event
+  return
+
+handleEscapeEvent = (event) ->
+  if query
+    query = ''
+    filterHints()
+  else deactivate()
+  stopKeyboardEvent event
   return
 
 stopKeyboardEvent = (event) ->

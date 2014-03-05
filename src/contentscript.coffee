@@ -180,7 +180,8 @@ shouldFocusElement = (el) ->
   canTypeInElement el  || (tagName == 'input' && inputType == 'range')
 
 getElementPos = (el) ->
-  rect = el.getBoundingClientRect()
+  rect = el.getClientRects()[0]
+  return if !rect
   scrollTop = window.scrollY
   scrollLeft = window.scrollX
   return {
@@ -191,8 +192,9 @@ getElementPos = (el) ->
   }
 
 isElementVisible = (el) ->
-  rect = el.getBoundingClientRect()
-  if rect.width <= 0 ||
+  rect = el.getClientRects()[0]
+  if !rect ||
+    rect.width <= 0 ||
     rect.height <= 0 ||
     rect.top >= w.innerHeight ||
     rect.left >= w.innerWidth ||

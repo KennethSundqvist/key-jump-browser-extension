@@ -140,6 +140,7 @@ removeHints = ->
 
 triggerHintMatch = (event) ->
   el = hintMatch.target
+  return if !el
   tagName = el.tagName.toLocaleLowerCase()
   mouseEventType = if tagName == 'select' then 'mousedown' else 'click'
   if shouldFocusElement hintMatch.target
@@ -164,6 +165,7 @@ triggerHintMatch = (event) ->
   return
 
 canTypeInElement = (el) ->
+  return if !el
   tagName = el.tagName.toLocaleLowerCase()
   inputType = el.getAttribute 'type'
   el.contentEditable == 'true' ||
@@ -171,6 +173,7 @@ canTypeInElement = (el) ->
     (tagName == 'input' && inputType not in KNOWN_NON_TYPABLE_INPUT_TYPES)
 
 shouldFocusElement = (el) ->
+  return if !el
   tagName = el.tagName.toLocaleLowerCase()
   inputType = el.getAttribute 'type'
   canTypeInElement el  || (tagName == 'input' && inputType == 'range')

@@ -8,7 +8,9 @@ textarea:not([disabled]),
 select:not([disabled]),
 button:not([disabled]),
 [contenteditable='true'],
-[contenteditable]:not([contenteditable='false'])
+[contenteditable]:not([contenteditable='false']),
+embed + .fc-panel,
+embed ~ .PlaceholderFF
 """
 # Unknown input types are treated as text inputs by Chrome
 # so we whitelist the ones we know can't be typed in.

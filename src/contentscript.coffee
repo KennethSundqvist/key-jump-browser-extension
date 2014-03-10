@@ -54,15 +54,26 @@ hintMatch = null
 removeHintsTimeout = null
 query = null
 targetEls = null
+hintWidth = 0
+hintHeight = 0
+hintCharWidth = 0
 
 activate = ->
   hints = {}
   query = ''
   hintId = 0
+  fragment = d.createDocumentFragment()
 
   if firstActivation
     d.body.appendChild hintsRootEl
     firstActivation = false
+
+    getHintHeightEl = hintSourceEl.cloneNode true
+    hintsRootEl.appendChild getHintHeightEl
+    hintWidth = getHintHeightEl.offsetWidth
+    getHintHeightEl.innerHTML = 0
+    hintHeight = getHintHeightEl.offsetHeight
+    hintCharWidth = getHintHeightEl.offsetWidth - hintWidth
 
   clearTimeout removeHintsTimeout
   removeHints()
@@ -85,21 +96,23 @@ activate = ->
         target: target
 
   for hintKey, hint of hints
+    hintKey = hintKey.toString()
     hint.el.setAttribute 'data-hint-id', hintKey
     hint.el.innerHTML = hintKey
-    hintsRootEl.appendChild hint.el
+    fragment.appendChild hint.el
     targetPos = getElementPos(hint.target)
     top = Math.max(
       d.body.scrollTop,
       Math.min(
         Math.round(targetPos.top),
-        (w.innerHeight + d.body.scrollTop) - hint.el.offsetHeight
+        (w.innerHeight + d.body.scrollTop) - hintHeight
       )
     )
-    left = Math.max(0, Math.round(targetPos.left) - hint.el.offsetWidth - 2)
+    left = Math.max(0, Math.round(targetPos.left) - hintWidth - (hintCharWidth * hintKey.length) - 2)
     hint.el.style.top = top + 'px'
     hint.el.style.left = left + 'px'
 
+  hintsRootEl.appendChild fragment
   hintsRootEl.classList.add CLASSNAME_ACTIVE
 
   return

@@ -1,7 +1,7 @@
 {
   "name": "key-jump-chrome-extension",
   "version": "3.0.1",
-  "description": "Click on links and stuff with your keyboard.",
+  "description": "A hit-a-hint keyboard extension that makes it easier for you to navigate the web.",
   "author": "Kenneth Sundqvist <eviloatmeal@gmail.com> (eviloatmeal.se)",
   "license": "MIT",
   "devDependencies": {

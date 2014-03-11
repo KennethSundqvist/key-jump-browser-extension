@@ -1,6 +1,6 @@
 # Key Jump Chrome Extension
 
-Click on links and stuff with your keyboard.
+A hit-a-hint keyboard extension that makes it easier for you to navigate the web.
 
 ## Install
 

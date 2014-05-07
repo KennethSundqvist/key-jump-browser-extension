@@ -10,7 +10,7 @@ html
       |  Key Jump options
 
     fieldset
-      legend Activation shortcut
+      legend Show hints
       .formGroup
         label
           = 'Key '
@@ -27,6 +27,26 @@ html
           |  Alt
         label
           input(type='checkbox', name='activationMeta')
+          |  Meta (Command on OS X)
+
+    fieldset
+      legend Show hints and open links in new tabs
+      .formGroup
+        label
+          = 'Key '
+          input(type='text', name='activationTabChar', maxlength='1', size='1')
+      .formGroup.formGroup-inline
+        label
+          input(type='checkbox', name='activationTabShift')
+          |  Shift
+        label
+          input(type='checkbox', name='activationTabCtrl')
+          |  Control
+        label
+          input(type='checkbox', name='activationTabAlt')
+          |  Alt
+        label
+          input(type='checkbox', name='activationTabMeta')
           |  Meta (Command on OS X)
 
     fieldset

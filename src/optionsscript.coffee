@@ -4,6 +4,11 @@ DEFAULT_OPTIONS =
   activationCtrl: false
   activationAlt: false
   activationMeta: false
+  activationTabChar: '.'
+  activationTabShift: false
+  activationTabCtrl: false
+  activationTabAlt: false
+  activationTabMeta: false
   keepHintsAfterTrigger: false
 
 d = document

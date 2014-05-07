@@ -33,6 +33,11 @@ DEFAULT_OPTIONS =
   activationCtrl: false
   activationAlt: false
   activationMeta: false
+  activationTabChar: '.'
+  activationTabShift: false
+  activationTabCtrl: false
+  activationTabAlt: false
+  activationTabMeta: false
   keepHintsAfterTrigger: false
 
 w = window
@@ -219,13 +224,22 @@ isElementVisible = (el) ->
     el = el.parentElement
   true
 
+getCharacterFromEvent = (event) ->
+  JSON.parse('"' + (event.keyIdentifier).replace('U+', '\\u') + '"').toLowerCase()
+
 isActivationKey = (event) ->
-  char = JSON.parse('"' + (event.keyIdentifier).replace('U+', '\\u') + '"').toLowerCase()
-  char == options.activationChar &&
+  getCharacterFromEvent(event) == options.activationChar &&
     event.shiftKey == options.activationShift &&
     event.ctrlKey == options.activationCtrl &&
     event.altKey == options.activationAlt &&
     event.metaKey == options.activationMeta
+
+isActivationTabKey = (event) ->
+  getCharacterFromEvent(event) == options.activationTabChar &&
+    event.shiftKey == options.activationTabShift &&
+    event.ctrlKey == options.activationTabCtrl &&
+    event.altKey == options.activationTabAlt &&
+    event.metaKey == options.activationTabMeta
 
 handleKeydownEvent = (event) ->
   hasModifier = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey
@@ -234,6 +248,10 @@ handleKeydownEvent = (event) ->
       # Use keyup for triggering, only prevent keydown
       stopKeyboardEvent event
     else if isActivationKey event
+      if active then deactivate() else activate()
+      stopKeyboardEvent event
+    else if isActivationTabKey event
+      console.log '"Show hints and open links in new tabs" triggered'
       if active then deactivate() else activate()
       stopKeyboardEvent event
     else if !hasModifier && active

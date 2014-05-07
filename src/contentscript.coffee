@@ -85,6 +85,7 @@ activate = ->
       active = true
       d.addEventListener 'scroll', setReactivationTimeout, false
       w.addEventListener 'popstate', setReactivationTimeout, false
+      w.addEventListener 'resize', setReactivationTimeout, false
   else return
 
   for target in targetEls
@@ -121,6 +122,7 @@ deactivate = ->
   if !active then return
   d.removeEventListener 'scroll', setReactivationTimeout, false
   w.removeEventListener 'popstate', setReactivationTimeout, false
+  w.removeEventListener 'resize', setReactivationTimeout, false
   clearTimeout reactivateTimeout
   timeoutDuration = parseFloat(w.getComputedStyle(hintsRootEl).transitionDuration) * 1000
   active = false

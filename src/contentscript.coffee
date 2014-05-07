@@ -34,10 +34,6 @@ DEFAULT_OPTIONS =
   activationAlt: false
   activationMeta: false
   keepHintsAfterTrigger: false
-  keepHintsAfterTriggerShift: false
-  keepHintsAfterTriggerCtrl: false
-  keepHintsAfterTriggerAlt: false
-  keepHintsAfterTriggerMeta: false
 
 w = window
 d = document
@@ -173,11 +169,7 @@ triggerHintMatch = (event) ->
       altKey:   event.altKey
       metaKey:  event.metaKey
     target.dispatchEvent clickEvent
-  if options.keepHintsAfterTrigger &&
-      event.shiftKey == options.keepHintsAfterTriggerShift &&
-      event.ctrlKey == options.keepHintsAfterTriggerCtrl &&
-      event.altKey == options.keepHintsAfterTriggerAlt &&
-      event.metaKey == options.keepHintsAfterTriggerMeta
+  if options.keepHintsAfterTrigger
     activate()
   else deactivate()
   return

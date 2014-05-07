@@ -5,10 +5,6 @@ DEFAULT_OPTIONS =
   activationAlt: false
   activationMeta: false
   keepHintsAfterTrigger: false
-  keepHintsAfterTriggerShift: false
-  keepHintsAfterTriggerCtrl: false
-  keepHintsAfterTriggerAlt: false
-  keepHintsAfterTriggerMeta: false
 
 d = document
 optionEls = d.querySelectorAll 'input'
@@ -21,11 +17,10 @@ getOptionFromStorage = (keys, callback) ->
 
 setOptionInView = (option) ->
   for key, value of option
-    els = d.querySelectorAll "[name=#{key}]"
-    for el in els
-      type = el.getAttribute 'type'
-      if type == 'checkbox' then el.checked = value
-      else el.value = value
+    el = d.querySelector "[name=#{key}]"
+    type = el.getAttribute 'type'
+    if type == 'checkbox' then el.checked = value
+    else el.value = value
 
 getOptionFromView = (event) ->
   data = {}

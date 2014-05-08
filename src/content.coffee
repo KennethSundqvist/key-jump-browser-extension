@@ -143,6 +143,7 @@ HintMode.prototype =
   renderHints: ->
     return if !@hints.length
     fragment = D.createDocumentFragment()
+    winHeight = D.documentElement.clientHeight
     for hintKey, hint of @hints
       hintKey = hintKey.toString()
       hint.el.setAttribute 'data-hint-id', hintKey
@@ -153,7 +154,7 @@ HintMode.prototype =
         D.body.scrollTop,
         Math.min(
           Math.round(targetPos.top),
-          (W.innerHeight + D.body.scrollTop) - @hintHeight
+          (winHeight + D.body.scrollTop) - @hintHeight
         )
       )
       left = Math.max(0, Math.round(targetPos.left) - @hintWidth - (@hintCharWidth * hintKey.length) - 2)
@@ -246,8 +247,8 @@ isElementVisible = (el) ->
   return false if !rect ||
     rect.width <= 0 ||
     rect.height <= 0 ||
-    rect.top >= W.innerHeight ||
-    rect.left >= W.innerWidth ||
+    rect.top >= D.documentElement.clientHeight ||
+    rect.left >= D.documentElement.clientWidth ||
     rect.bottom <= 0 ||
     rect.right <= 0
   while el

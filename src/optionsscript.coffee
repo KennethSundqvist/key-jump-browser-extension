@@ -10,6 +10,7 @@ DEFAULT_OPTIONS =
   activationTabAlt: false
   activationTabMeta: false
   keepHintsAfterTrigger: false
+  autoTrigger: true
 
 d = document
 optionEls = d.querySelectorAll 'input'

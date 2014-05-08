@@ -52,6 +52,13 @@ html
     fieldset
       .formGroup
         label
+          input(type='checkbox', name='autoTrigger')
+          |  Automatically trigger hints when possible
+        p.subtle If you type "1" and there are no other hints starting with "1" then that hint will be triggered without you having to press the enter key.
+
+    fieldset
+      .formGroup
+        label
           input(type='checkbox', name='keepHintsAfterTrigger')
           |  Stay in hint mode after triggering a hint
 

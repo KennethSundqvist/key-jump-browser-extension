@@ -43,6 +43,7 @@ DEFAULT_OPTIONS =
   activationTabAlt: false
   activationTabMeta: false
   keepHintsAfterTrigger: false
+  autoTrigger: true
 
 options = {}
 hintsRootEl = d.createElement 'div'
@@ -55,7 +56,7 @@ hintMode = null
 HintMode = (openLinksInTabs) ->
   @openLinksInTabs = openLinksInTabs
   @resetHints()
-  return if !@targetEls.length
+  return if !@hints.length
   @firstInstancePreparations()
   @eventBindings 'add'
   @renderHints()
@@ -101,14 +102,26 @@ HintMode.prototype =
     return
 
   resetHints: ->
+    @removeHints()
     @hints = {}
     @query = ''
-    @targetEls = d.querySelectorAll TARGET_ELEMENTS
-    @removeHints()
+    targetEls = d.querySelectorAll TARGET_ELEMENTS
+    hintId = 0
+    for el in targetEls
+      if isElementVisible el
+        hintId++
+        @hints.length++
+        @hints[hintId] =
+          id: hintId
+          el: hintSourceEl.cloneNode true
+          target: el
+    Object.defineProperty @hints, 'length', value: hintId, enumerable: false
+    return
 
   refreshHints: ->
     @resetHints()
     @renderHints()
+    return
 
   setRefreshHintsTimeout: ->
     clearTimeout @refreshTimeout
@@ -126,19 +139,8 @@ HintMode.prototype =
     return
 
   renderHints: ->
-    return if !@targetEls.length
-
-    hintId = 0
+    return if !@hints.length
     fragment = d.createDocumentFragment()
-
-    for target in @targetEls
-      if isElementVisible target
-        hintId++
-        @hints[hintId] =
-          id: hintId
-          el: hintSourceEl.cloneNode true
-          target: target
-
     for hintKey, hint of @hints
       hintKey = hintKey.toString()
       hint.el.setAttribute 'data-hint-id', hintKey
@@ -155,7 +157,6 @@ HintMode.prototype =
       left = Math.max(0, Math.round(targetPos.left) - @hintWidth - (@hintCharWidth * hintKey.length) - 2)
       hint.el.style.top = top + 'px'
       hint.el.style.left = left + 'px'
-
     hintsRootEl.appendChild fragment
     hintsRootEl.classList.add CLASSNAME_ACTIVE
     return
@@ -167,6 +168,7 @@ HintMode.prototype =
       if @hints[@query + char]
         @query += char
         @filterHints()
+        if options.autoTrigger then @autoTriggerHintMatch()
     return
 
   filterHints: ->
@@ -204,6 +206,11 @@ HintMode.prototype =
         metaKey:  @openLinksInTabs && NEW_TAB_MODIFIER_KEY == 'meta'
       target.dispatchEvent clickEvent
     if options.keepHintsAfterTrigger then @refreshHints()
+    return
+
+  autoTriggerHintMatch: ->
+    if @hintMatch && @hints.length < parseInt(@hintMatch.id + '0')
+      @triggerHintMatch()
     return
 
 canTypeInElement = (el) ->

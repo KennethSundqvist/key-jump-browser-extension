@@ -1,10 +1,10 @@
-w = window
-d = document
-
+W = window
+D = document
+O = Object
 HINT_CHARACTERS = '1234567890'
 KEYCODE_ESC = 27
 KEYCODE_RETURN = 13
-NEW_TAB_MODIFIER_KEY = if w.navigator.platform.toLowerCase().indexOf('mac') > -1 then 'meta' else 'ctrl'
+NEW_TAB_MODIFIER_KEY = if W.navigator.platform.toLowerCase().indexOf('mac') > -1 then 'meta' else 'ctrl'
 TARGET_ELEMENTS = """
 a[href],
 input:not([disabled]):not([type=hidden]),
@@ -46,9 +46,9 @@ DEFAULT_OPTIONS =
   autoTrigger: true
 
 options = {}
-hintsRootEl = d.createElement 'div'
+hintsRootEl = D.createElement 'div'
 hintsRootEl.classList.add CLASSNAME_ROOT
-hintSourceEl = d.createElement 'div'
+hintSourceEl = D.createElement 'div'
 hintSourceEl.classList.add CLASSNAME_HINT
 
 hintMode = null
@@ -73,10 +73,10 @@ HintMode.prototype =
   firstInstancePreparations: ->
     if @firstInstance
       proto = @constructor.prototype
-      d.body.appendChild hintsRootEl
+      D.body.appendChild hintsRootEl
       proto.firstInstance = false
 
-      proto.timeoutDuration = parseFloat(w.getComputedStyle(hintsRootEl).transitionDuration) * 1000
+      proto.timeoutDuration = parseFloat(W.getComputedStyle(hintsRootEl).transitionDuration) * 1000
 
       hintDimensionsEl = hintSourceEl.cloneNode true
       hintsRootEl.appendChild hintDimensionsEl
@@ -105,7 +105,7 @@ HintMode.prototype =
     @removeHints()
     @hints = {}
     @query = ''
-    targetEls = d.querySelectorAll TARGET_ELEMENTS
+    targetEls = D.querySelectorAll TARGET_ELEMENTS
     hintId = 0
     for el in targetEls
       if isElementVisible el
@@ -115,7 +115,7 @@ HintMode.prototype =
           id: hintId
           el: hintSourceEl.cloneNode true
           target: el
-    Object.defineProperty @hints, 'length', value: hintId, enumerable: false
+    O.defineProperty @hints, 'length', value: hintId, enumerable: false
     return
 
   refreshHints: ->
@@ -133,14 +133,14 @@ HintMode.prototype =
   eventBindings: (addOrRemove) ->
     if !@boundSetRefreshHintsTimeout
       @boundSetRefreshHintsTimeout = @setRefreshHintsTimeout.bind @
-    d[addOrRemove + 'EventListener'] 'scroll', @boundSetRefreshHintsTimeout, false
-    w[addOrRemove + 'EventListener'] 'popstate', @boundSetRefreshHintsTimeout, false
-    w[addOrRemove + 'EventListener'] 'resize', @boundSetRefreshHintsTimeout, false
+    D[addOrRemove + 'EventListener'] 'scroll', @boundSetRefreshHintsTimeout, false
+    W[addOrRemove + 'EventListener'] 'popstate', @boundSetRefreshHintsTimeout, false
+    W[addOrRemove + 'EventListener'] 'resize', @boundSetRefreshHintsTimeout, false
     return
 
   renderHints: ->
     return if !@hints.length
-    fragment = d.createDocumentFragment()
+    fragment = D.createDocumentFragment()
     for hintKey, hint of @hints
       hintKey = hintKey.toString()
       hint.el.setAttribute 'data-hint-id', hintKey
@@ -148,10 +148,10 @@ HintMode.prototype =
       fragment.appendChild hint.el
       targetPos = getElementPos(hint.target)
       top = Math.max(
-        d.body.scrollTop,
+        D.body.scrollTop,
         Math.min(
           Math.round(targetPos.top),
-          (w.innerHeight + d.body.scrollTop) - @hintHeight
+          (W.innerHeight + D.body.scrollTop) - @hintHeight
         )
       )
       left = Math.max(0, Math.round(targetPos.left) - @hintWidth - (@hintCharWidth * hintKey.length) - 2)
@@ -199,7 +199,7 @@ HintMode.prototype =
       target.focus()
     else
       clickEvent = new MouseEvent mouseEventType,
-        view: w
+        view: W
         bubbles: true
         cancelable: true
         ctrlKey:  @openLinksInTabs && NEW_TAB_MODIFIER_KEY == 'ctrl'
@@ -230,8 +230,8 @@ shouldFocusElement = (el) ->
 getElementPos = (el) ->
   rect = el.getClientRects()[0]
   return if !rect
-  scrollTop = w.scrollY
-  scrollLeft = w.scrollX
+  scrollTop = W.scrollY
+  scrollLeft = W.scrollX
   return {
     top: rect.top + scrollTop
     bottom: rect.bottom + scrollTop
@@ -244,12 +244,12 @@ isElementVisible = (el) ->
   return false if !rect ||
     rect.width <= 0 ||
     rect.height <= 0 ||
-    rect.top >= w.innerHeight ||
-    rect.left >= w.innerWidth ||
+    rect.top >= W.innerHeight ||
+    rect.left >= W.innerWidth ||
     rect.bottom <= 0 ||
     rect.right <= 0
   while el
-    styles = w.getComputedStyle el
+    styles = W.getComputedStyle el
     return false if styles.display == 'none' ||
       styles.visibility == 'hidden' ||
       styles.opacity == '0'
@@ -282,8 +282,8 @@ toggleHintMode = (openLinksInTabs) ->
 
 handleKeydownEvent = (event) ->
   hasModifier = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey
-  if !canTypeInElement d.activeElement
-    if hintMode && hintMode.hintMatch && event.keyCode == KEYCODE_RETURN && !canTypeInElement d.activeElement
+  if !canTypeInElement D.activeElement
+    if hintMode && hintMode.hintMatch && event.keyCode == KEYCODE_RETURN && !canTypeInElement D.activeElement
       # Use keyup for triggering, only prevent keydown
       stopKeyboardEvent event
     else if isActivationKey event
@@ -300,7 +300,7 @@ handleKeydownEvent = (event) ->
 handleKeyupEvent = (event) ->
   # Use keyup for triggering, because if we focus the target element on keydown
   # there will be a keyup event on the target element and that's annoying to deal with..
-  if hintMode && hintMode.hintMatch && event.keyCode == KEYCODE_RETURN && !canTypeInElement d.activeElement
+  if hintMode && hintMode.hintMatch && event.keyCode == KEYCODE_RETURN && !canTypeInElement D.activeElement
     stopKeyboardEvent event
     hintMode.triggerHintMatch()
   return
@@ -313,10 +313,10 @@ stopKeyboardEvent = (event) ->
 
 # Init
 
-chrome.storage.sync.get Object.keys(DEFAULT_OPTIONS), (storageOptions) ->
+chrome.storage.sync.get O.keys(DEFAULT_OPTIONS), (storageOptions) ->
   for own key, value of DEFAULT_OPTIONS
     options[key] = if storageOptions.hasOwnProperty key then storageOptions[key] else value
   return
 
-d.addEventListener 'keydown', handleKeydownEvent, true
-d.addEventListener 'keyup', handleKeyupEvent, true
+D.addEventListener 'keydown', handleKeydownEvent, true
+D.addEventListener 'keyup', handleKeyupEvent, true

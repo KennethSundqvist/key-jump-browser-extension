@@ -1,6 +1,10 @@
+w = window
+d = document
+
 HINT_CHARACTERS = '1234567890'
 KEYCODE_ESC = 27
 KEYCODE_RETURN = 13
+NEW_TAB_MODIFIER_KEY = if w.navigator.platform.toLowerCase().indexOf('mac') > -1 then 'meta' else 'ctrl'
 TARGET_ELEMENTS = """
 a[href],
 input:not([disabled]):not([type=hidden]),
@@ -40,8 +44,6 @@ DEFAULT_OPTIONS =
   activationTabMeta: false
   keepHintsAfterTrigger: false
 
-w = window
-d = document
 options = {}
 hintsRootEl = d.createElement 'div'
 hintsRootEl.classList.add CLASSNAME_ROOT
@@ -198,10 +200,8 @@ HintMode.prototype =
         view: w
         bubbles: true
         cancelable: true
-        shiftKey: event.shiftKey
-        ctrlKey:  event.ctrlKey
-        altKey:   event.altKey
-        metaKey:  event.metaKey
+        ctrlKey:  @openLinksInTabs && NEW_TAB_MODIFIER_KEY == 'ctrl'
+        metaKey:  @openLinksInTabs && NEW_TAB_MODIFIER_KEY == 'meta'
       target.dispatchEvent clickEvent
     if options.keepHintsAfterTrigger then @refreshHints()
     return

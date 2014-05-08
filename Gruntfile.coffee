@@ -1,4 +1,5 @@
 module.exports = (grunt) ->
+  "use strict"
 
   packageJSON = grunt.file.readJSON 'package.json'
 

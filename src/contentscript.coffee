@@ -1,3 +1,5 @@
+"use strict"
+
 W = window
 D = document
 O = Object

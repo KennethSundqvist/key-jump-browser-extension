@@ -1,3 +1,5 @@
+"use strict"
+
 DEFAULT_OPTIONS =
   activationChar: ','
   activationShift: false

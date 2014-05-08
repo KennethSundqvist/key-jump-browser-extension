@@ -266,6 +266,13 @@ isActivationTabKey = (event) ->
     event.altKey == options.activationTabAlt &&
     event.metaKey == options.activationTabMeta
 
+toggleHintMode = (openLinksInTabs) ->
+  if hintMode
+    if hintMode.openLinksInTabs != openLinksInTabs
+      hintMode.openLinksInTabs = openLinksInTabs
+    else hintMode.deactivate()
+  else hintMode = new HintMode openLinksInTabs
+
 handleKeydownEvent = (event) ->
   hasModifier = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey
   if !canTypeInElement d.activeElement
@@ -273,10 +280,10 @@ handleKeydownEvent = (event) ->
       # Use keyup for triggering, only prevent keydown
       stopKeyboardEvent event
     else if isActivationKey event
-      if hintMode then hintMode.deactivate() else hintMode = new HintMode false
+      toggleHintMode false
       stopKeyboardEvent event
     else if isActivationTabKey event
-      if hintMode then hintMode.deactivate() else hintMode = new HintMode true
+      toggleHintMode true
       stopKeyboardEvent event
     else if !hasModifier && hintMode
       if event.keyCode == KEYCODE_ESC then hintMode.handleEscapeEvent event

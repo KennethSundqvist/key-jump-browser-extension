@@ -26,7 +26,7 @@ CLASSNAME_ACTIVE = 'KEYJUMP_active'
 CLASSNAME_FILTERED = 'KEYJUMP_filtered'
 CLASSNAME_HINT = 'KEYJUMP_hint'
 CLASSNAME_MATCH = 'KEYJUMP_match'
-TIMEOUT_REACTIVATE = 100
+TIMEOUT_REFRESH = 100
 DEFAULT_OPTIONS =
   activationChar: ','
   activationShift: false
@@ -43,141 +43,168 @@ DEFAULT_OPTIONS =
 w = window
 d = document
 options = {}
-firstActivation = true
-active = false
-reactivateTimeout = null
 hintsRootEl = d.createElement 'div'
 hintsRootEl.classList.add CLASSNAME_ROOT
 hintSourceEl = d.createElement 'div'
 hintSourceEl.classList.add CLASSNAME_HINT
-hints = null
-hintMatch = null
-removeHintsTimeout = null
-query = null
-targetEls = null
-hintWidth = 0
-hintHeight = 0
-hintCharWidth = 0
 
-activate = ->
-  hints = {}
-  query = ''
-  hintId = 0
-  fragment = d.createDocumentFragment()
+hintMode = null
 
-  if firstActivation
-    d.body.appendChild hintsRootEl
-    firstActivation = false
+HintMode = (openLinksInTabs) ->
+  @openLinksInTabs = openLinksInTabs
+  @resetHints()
+  return if !@targetEls.length
+  @firstInstancePreparations()
+  @eventBindings 'add'
+  @renderHints()
+  return
 
-    getHintHeightEl = hintSourceEl.cloneNode true
-    hintsRootEl.appendChild getHintHeightEl
-    hintWidth = getHintHeightEl.offsetWidth
-    getHintHeightEl.innerHTML = 0
-    hintHeight = getHintHeightEl.offsetHeight
-    hintCharWidth = getHintHeightEl.offsetWidth - hintWidth
+HintMode.prototype =
+  constructor: HintMode
+  firstInstance: true
+  hintWidth: 0
+  hintHeight: 0
+  hintCharWidth: 0
+  timeoutDuration: null
 
-  clearTimeout removeHintsTimeout
-  removeHints()
+  firstInstancePreparations: ->
+    if @firstInstance
+      proto = @constructor.prototype
+      d.body.appendChild hintsRootEl
+      proto.firstInstance = false
 
-  targetEls = d.querySelectorAll TARGET_ELEMENTS
+      proto.timeoutDuration = parseFloat(w.getComputedStyle(hintsRootEl).transitionDuration) * 1000
 
-  if targetEls.length
-    if !active
-      active = true
-      d.addEventListener 'scroll', setReactivationTimeout, false
-      w.addEventListener 'popstate', setReactivationTimeout, false
-      w.addEventListener 'resize', setReactivationTimeout, false
-  else return
+      hintDimensionsEl = hintSourceEl.cloneNode true
+      hintsRootEl.appendChild hintDimensionsEl
+      proto.hintWidth = hintDimensionsEl.offsetWidth
+      hintDimensionsEl.innerHTML = 0
+      proto.hintHeight = hintDimensionsEl.offsetHeight
+      proto.hintCharWidth = hintDimensionsEl.offsetWidth - @hintWidth
+      hintsRootEl.removeChild hintDimensionsEl
+    return
 
-  for target in targetEls
-    if isElementVisible target
-      hintId++
-      hints[hintId] =
-        id: hintId
-        el: hintSourceEl.cloneNode true
-        target: target
+  deactivate: ->
+    hintMode = null
+    @eventBindings 'remove'
+    clearTimeout @refreshTimeout
+    clearTimeout @removeHintsTimeout
+    hintsRootEl.classList.remove CLASSNAME_ACTIVE
+    @removeHintsTimeout = setTimeout @removeHints, @timeoutDuration
+    return
 
-  for hintKey, hint of hints
-    hintKey = hintKey.toString()
-    hint.el.setAttribute 'data-hint-id', hintKey
-    hint.el.innerHTML = hintKey
-    fragment.appendChild hint.el
-    targetPos = getElementPos(hint.target)
-    top = Math.max(
-      d.body.scrollTop,
-      Math.min(
-        Math.round(targetPos.top),
-        (w.innerHeight + d.body.scrollTop) - hintHeight
+  removeHints: ->
+    hintsRootEl.removeChild hintsRootEl.firstChild while hintsRootEl.firstChild
+    hintsRootEl.classList.remove CLASSNAME_FILTERED
+    return
+
+  resetHints: ->
+    @hints = {}
+    @query = ''
+    @targetEls = d.querySelectorAll TARGET_ELEMENTS
+    @removeHints()
+
+  refreshHints: ->
+    @resetHints()
+    @renderHints()
+
+  setRefreshHintsTimeout: ->
+    clearTimeout @refreshTimeout
+    @refreshTimeout = setTimeout @refreshHints.bind(@), TIMEOUT_REFRESH
+    return
+
+  boundSetRefreshHintsTimeout: null
+
+  eventBindings: (addOrRemove) ->
+    if !@boundSetRefreshHintsTimeout
+      @boundSetRefreshHintsTimeout = @setRefreshHintsTimeout.bind @
+    d[addOrRemove + 'EventListener'] 'scroll', @boundSetRefreshHintsTimeout, false
+    w[addOrRemove + 'EventListener'] 'popstate', @boundSetRefreshHintsTimeout, false
+    w[addOrRemove + 'EventListener'] 'resize', @boundSetRefreshHintsTimeout, false
+    return
+
+  renderHints: ->
+    return if !@targetEls.length
+
+    hintId = 0
+    fragment = d.createDocumentFragment()
+
+    for target in @targetEls
+      if isElementVisible target
+        hintId++
+        @hints[hintId] =
+          id: hintId
+          el: hintSourceEl.cloneNode true
+          target: target
+
+    for hintKey, hint of @hints
+      hintKey = hintKey.toString()
+      hint.el.setAttribute 'data-hint-id', hintKey
+      hint.el.innerHTML = hintKey
+      fragment.appendChild hint.el
+      targetPos = getElementPos(hint.target)
+      top = Math.max(
+        d.body.scrollTop,
+        Math.min(
+          Math.round(targetPos.top),
+          (w.innerHeight + d.body.scrollTop) - @hintHeight
+        )
       )
-    )
-    left = Math.max(0, Math.round(targetPos.left) - hintWidth - (hintCharWidth * hintKey.length) - 2)
-    hint.el.style.top = top + 'px'
-    hint.el.style.left = left + 'px'
+      left = Math.max(0, Math.round(targetPos.left) - @hintWidth - (@hintCharWidth * hintKey.length) - 2)
+      hint.el.style.top = top + 'px'
+      hint.el.style.left = left + 'px'
 
-  hintsRootEl.appendChild fragment
-  hintsRootEl.classList.add CLASSNAME_ACTIVE
+    hintsRootEl.appendChild fragment
+    hintsRootEl.classList.add CLASSNAME_ACTIVE
+    return
 
-  return
+  appendToQuery: (event) ->
+    char = String.fromCharCode event.keyCode
+    if HINT_CHARACTERS.indexOf(char) > -1
+      stopKeyboardEvent event
+      if @hints[@query + char]
+        @query += char
+        @filterHints()
+    return
 
-deactivate = ->
-  if !active then return
-  d.removeEventListener 'scroll', setReactivationTimeout, false
-  w.removeEventListener 'popstate', setReactivationTimeout, false
-  w.removeEventListener 'resize', setReactivationTimeout, false
-  clearTimeout reactivateTimeout
-  timeoutDuration = parseFloat(w.getComputedStyle(hintsRootEl).transitionDuration) * 1000
-  active = false
-  hints = null
-  hintMatch = null
-  hintsRootEl.classList.remove CLASSNAME_ACTIVE
-  removeHintsTimeout = setTimeout removeHints, timeoutDuration
-  query = null
-  return
+  filterHints: ->
+    @hintMatch = @hints[@query]
+    hintsRootEl.classList[if @query then 'add' else 'remove'] CLASSNAME_FILTERED
+    for el in hintsRootEl.querySelectorAll '.' + CLASSNAME_MATCH
+      el.classList.remove CLASSNAME_MATCH
+    if @query
+      for el in hintsRootEl.querySelectorAll '[data-hint-id^="' + @query + '"]'
+        el.classList.add CLASSNAME_MATCH
+    return
 
-appendToQuery = (event) ->
-  char = String.fromCharCode event.keyCode
-  if HINT_CHARACTERS.indexOf(char) > -1
+  handleEscapeEvent: (event) ->
+    if @query
+      @query = ''
+      @filterHints()
+    else @deactivate()
     stopKeyboardEvent event
-    if hints[query + char]
-      query += char
-      filterHints()
-  return
+    return
 
-filterHints = ->
-  hintMatch = hints[query]
-  hintsRootEl.classList[if query then 'add' else 'remove'] CLASSNAME_FILTERED
-  for el in hintsRootEl.querySelectorAll '.' + CLASSNAME_MATCH
-    el.classList.remove CLASSNAME_MATCH
-  if query
-    for el in hintsRootEl.querySelectorAll '[data-hint-id^="' + query + '"]'
-      el.classList.add CLASSNAME_MATCH
-  return
-
-removeHints = ->
-  hintsRootEl.removeChild hintsRootEl.firstChild while hintsRootEl.firstChild
-  hintsRootEl.classList.remove CLASSNAME_FILTERED
-
-triggerHintMatch = (event) ->
-  target = hintMatch && hintMatch.target
-  return if !target
-  tagName = target.tagName.toLocaleLowerCase()
-  mouseEventType = if tagName == 'select' then 'mousedown' else 'click'
-  if shouldFocusElement target
-    target.focus()
-  else
-    clickEvent = new MouseEvent mouseEventType,
-      view: window
-      bubbles: true
-      cancelable: true
-      shiftKey: event.shiftKey
-      ctrlKey:  event.ctrlKey
-      altKey:   event.altKey
-      metaKey:  event.metaKey
-    target.dispatchEvent clickEvent
-  if options.keepHintsAfterTrigger
-    activate()
-  else deactivate()
-  return
+  triggerHintMatch: ->
+    target = @hintMatch && @hintMatch.target
+    return if !target
+    tagName = target.tagName.toLowerCase()
+    mouseEventType = if tagName == 'select' then 'mousedown' else 'click'
+    if !options.keepHintsAfterTrigger then @deactivate()
+    if shouldFocusElement target
+      target.focus()
+    else
+      clickEvent = new MouseEvent mouseEventType,
+        view: w
+        bubbles: true
+        cancelable: true
+        shiftKey: event.shiftKey
+        ctrlKey:  event.ctrlKey
+        altKey:   event.altKey
+        metaKey:  event.metaKey
+      target.dispatchEvent clickEvent
+    if options.keepHintsAfterTrigger then @refreshHints()
+    return
 
 canTypeInElement = (el) ->
   return if !el
@@ -191,13 +218,13 @@ shouldFocusElement = (el) ->
   return if !el
   tagName = el.tagName.toLocaleLowerCase()
   inputType = el.getAttribute 'type'
-  canTypeInElement el  || (tagName == 'input' && inputType == 'range')
+  canTypeInElement el || (tagName == 'input' && inputType == 'range')
 
 getElementPos = (el) ->
   rect = el.getClientRects()[0]
   return if !rect
-  scrollTop = window.scrollY
-  scrollLeft = window.scrollX
+  scrollTop = w.scrollY
+  scrollLeft = w.scrollX
   return {
     top: rect.top + scrollTop
     bottom: rect.bottom + scrollTop
@@ -207,20 +234,18 @@ getElementPos = (el) ->
 
 isElementVisible = (el) ->
   rect = el.getClientRects()[0]
-  if !rect ||
+  return false if !rect ||
     rect.width <= 0 ||
     rect.height <= 0 ||
     rect.top >= w.innerHeight ||
     rect.left >= w.innerWidth ||
     rect.bottom <= 0 ||
     rect.right <= 0
-      return false
   while el
     styles = w.getComputedStyle el
-    if styles.display == 'none' ||
+    return false if styles.display == 'none' ||
       styles.visibility == 'hidden' ||
       styles.opacity == '0'
-        return false
     el = el.parentElement
   true
 
@@ -244,46 +269,32 @@ isActivationTabKey = (event) ->
 handleKeydownEvent = (event) ->
   hasModifier = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey
   if !canTypeInElement d.activeElement
-    if event.keyCode == KEYCODE_RETURN && hintMatch
+    if hintMode && hintMode.hintMatch && event.keyCode == KEYCODE_RETURN && !canTypeInElement d.activeElement
       # Use keyup for triggering, only prevent keydown
       stopKeyboardEvent event
     else if isActivationKey event
-      if active then deactivate() else activate()
+      if hintMode then hintMode.deactivate() else hintMode = new HintMode false
       stopKeyboardEvent event
     else if isActivationTabKey event
-      console.log '"Show hints and open links in new tabs" triggered'
-      if active then deactivate() else activate()
+      if hintMode then hintMode.deactivate() else hintMode = new HintMode true
       stopKeyboardEvent event
-    else if !hasModifier && active
-      if event.keyCode == KEYCODE_ESC then handleEscapeEvent event
-      else appendToQuery event
+    else if !hasModifier && hintMode
+      if event.keyCode == KEYCODE_ESC then hintMode.handleEscapeEvent event
+      else hintMode.appendToQuery event
   return
 
 handleKeyupEvent = (event) ->
   # Use keyup for triggering, because if we focus the target element on keydown
   # there will be a keyup event on the target element and that's annoying to deal with..
-  if event.keyCode == KEYCODE_RETURN && hintMatch && !canTypeInElement d.activeElement
+  if hintMode && hintMode.hintMatch && event.keyCode == KEYCODE_RETURN && !canTypeInElement d.activeElement
     stopKeyboardEvent event
-    triggerHintMatch event
-  return
-
-handleEscapeEvent = (event) ->
-  if query
-    query = ''
-    filterHints()
-  else deactivate()
-  stopKeyboardEvent event
+    hintMode.triggerHintMatch()
   return
 
 stopKeyboardEvent = (event) ->
   event.preventDefault()
   event.stopPropagation()
   event.stopImmediatePropagation()
-  return
-
-setReactivationTimeout = () ->
-  clearTimeout reactivateTimeout
-  reactivateTimeout = setTimeout activate, TIMEOUT_REACTIVATE
   return
 
 # Init

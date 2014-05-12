@@ -48,6 +48,11 @@ module.exports = (grunt) ->
           ext: '.js'
         }]
 
+    coffeelint:
+      options:
+        configFile: 'coffeelint.json'
+      dist: 'src/**/*.coffee'
+
     jade:
       dist:
         files: [{
@@ -78,7 +83,7 @@ module.exports = (grunt) ->
         tasks: 'sass'
       coffee:
         files: 'src/*.coffee',
-        tasks: 'coffee'
+        tasks: ['coffeelint', 'coffee']
       jade:
         files: 'src/*.jade',
         tasks: 'jade'
@@ -90,12 +95,21 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-copy'
   grunt.loadNpmTasks 'grunt-contrib-sass'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
+  grunt.loadNpmTasks 'grunt-coffeelint'
   grunt.loadNpmTasks 'grunt-contrib-jade'
   grunt.loadNpmTasks 'grunt-autoprefixer'
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-zip'
 
-  grunt.registerTask 'default', ['copy', 'sass', 'coffee', 'jade', 'autoprefixer', 'zip']
+  grunt.registerTask 'default', [
+    'copy',
+    'sass',
+    'coffeelint',
+    'coffee',
+    'jade',
+    'autoprefixer',
+    'zip'
+  ]
   grunt.registerTask 'dist', 'default'
   grunt.registerTask 'd', 'dist'
   grunt.registerTask 'w', 'watch'

@@ -6,7 +6,7 @@ O = Object
 HINT_CHARACTERS = '1234567890'
 KEYCODE_ESC = 27
 KEYCODE_RETURN = 13
-NEW_TAB_MODIFIER_KEY = if W.navigator.platform.toLowerCase().indexOf('mac') > -1 then 'meta' else 'ctrl'
+PLATFORM_MAC = W.navigator.platform.toLowerCase().indexOf('mac') > -1
 TARGET_ELEMENTS = """
 a[href],
 input:not([disabled]):not([type=hidden]),
@@ -75,10 +75,12 @@ HintMode.prototype =
   firstInstancePreparations: ->
     if @firstInstance
       proto = @constructor.prototype
-      D.body.appendChild hintsRootEl
-      proto.firstInstance = false
 
-      proto.timeoutDuration = parseFloat(W.getComputedStyle(hintsRootEl).transitionDuration) * 1000
+      D.body.appendChild hintsRootEl
+      transitionDuration = W.getComputedStyle(hintsRootEl).transitionDuration
+
+      proto.firstInstance = false
+      proto.timeoutDuration = parseFloat(transitionDuration) * 1000
 
       hintDimensionsEl = hintSourceEl.cloneNode true
       hintsRootEl.appendChild hintDimensionsEl
@@ -125,19 +127,19 @@ HintMode.prototype =
     @renderHints()
     return
 
-  setRefreshHintsTimeout: ->
+  setRefreshTimeout: ->
     clearTimeout @refreshTimeout
     @refreshTimeout = setTimeout @refreshHints.bind(@), TIMEOUT_REFRESH
     return
 
-  boundSetRefreshHintsTimeout: null
+  boundSetRefreshTimeout: null
 
   eventBindings: (addOrRemove) ->
-    if !@boundSetRefreshHintsTimeout
-      @boundSetRefreshHintsTimeout = @setRefreshHintsTimeout.bind @
-    D[addOrRemove + 'EventListener'] 'scroll', @boundSetRefreshHintsTimeout, false
-    W[addOrRemove + 'EventListener'] 'popstate', @boundSetRefreshHintsTimeout, false
-    W[addOrRemove + 'EventListener'] 'resize', @boundSetRefreshHintsTimeout, false
+    if !@boundSetRefreshTimeout
+      @boundSetRefreshTimeout = @setRefreshTimeout.bind @
+    D[addOrRemove + 'EventListener'] 'scroll', @boundSetRefreshTimeout, false
+    W[addOrRemove + 'EventListener'] 'popstate', @boundSetRefreshTimeout, false
+    W[addOrRemove + 'EventListener'] 'resize', @boundSetRefreshTimeout, false
     return
 
   renderHints: ->
@@ -157,7 +159,9 @@ HintMode.prototype =
           (winHeight + D.body.scrollTop) - @hintHeight
         )
       )
-      left = Math.max(0, Math.round(targetPos.left) - @hintWidth - (@hintCharWidth * hintKey.length) - 2)
+      hintCharWidth = @hintCharWidth * hintKey.length
+      hintLeftPos = Math.round(targetPos.left)
+      left = Math.max(0, hintLeftPos - @hintWidth - hintCharWidth - 2)
       hint.el.style.top = top + 'px'
       hint.el.style.left = left + 'px'
     hintsRootEl.appendChild fragment
@@ -205,8 +209,8 @@ HintMode.prototype =
         view: W
         bubbles: true
         cancelable: true
-        ctrlKey:  @openLinksInTabs && NEW_TAB_MODIFIER_KEY == 'ctrl'
-        metaKey:  @openLinksInTabs && NEW_TAB_MODIFIER_KEY == 'meta'
+        ctrlKey: @openLinksInTabs && !PLATFORM_MAC
+        metaKey: @openLinksInTabs && PLATFORM_MAC
       target.dispatchEvent clickEvent
     if options.keepHintsAfterTrigger then @refreshHints()
     return
@@ -260,7 +264,8 @@ isElementVisible = (el) ->
   true
 
 getCharacterFromEvent = (event) ->
-  JSON.parse('"' + (event.keyIdentifier).replace('U+', '\\u') + '"').toLowerCase()
+  keyIdentifier = (event.keyIdentifier).replace('U+', '\\u')
+  JSON.parse('"' + keyIdentifier + '"').toLowerCase()
 
 isActivationKey = (event) ->
   getCharacterFromEvent(event) == options.activationChar &&
@@ -284,9 +289,13 @@ toggleHintMode = (openLinksInTabs) ->
   else hintMode = new HintMode openLinksInTabs
 
 handleKeydownEvent = (event) ->
-  hasModifier = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey
-  if !canTypeInElement D.activeElement
-    if hintMode && hintMode.hintMatch && event.keyCode == KEYCODE_RETURN && !canTypeInElement D.activeElement
+  notInTypableElement = !canTypeInElement D.activeElement
+  if notInTypableElement
+    hasModifier = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey
+    hasMatch = hintMode && hintMode.hintMatch
+    isReturn = event.keyCode == KEYCODE_RETURN
+    isEscape = event.keyCode == KEYCODE_ESC
+    if hasMatch && isReturn && notInTypableElement
       # Use keyup for triggering, only prevent keydown
       stopKeyboardEvent event
     else if isActivationKey event
@@ -296,14 +305,18 @@ handleKeydownEvent = (event) ->
       toggleHintMode true
       stopKeyboardEvent event
     else if !hasModifier && hintMode
-      if event.keyCode == KEYCODE_ESC then hintMode.handleEscapeEvent event
+      if isEscape then hintMode.handleEscapeEvent event
       else hintMode.appendToQuery event
   return
 
 handleKeyupEvent = (event) ->
-  # Use keyup for triggering, because if we focus the target element on keydown
-  # there will be a keyup event on the target element and that's annoying to deal with..
-  if hintMode && hintMode.hintMatch && event.keyCode == KEYCODE_RETURN && !canTypeInElement D.activeElement
+  # Use keyup for triggering, because if we focus the target
+  # element on keydown there will be a keyup event on the
+  # target element and that's annoying to deal with..
+  hasMatch = hintMode && hintMode.hintMatch
+  isReturn = event.keyCode == KEYCODE_RETURN
+  notInTypableElement = !canTypeInElement D.activeElement
+  if hasMatch && isReturn && notInTypableElement
     stopKeyboardEvent event
     hintMode.triggerHintMatch()
   return
@@ -317,8 +330,9 @@ stopKeyboardEvent = (event) ->
 # Init
 
 chrome.storage.sync.get O.keys(DEFAULT_OPTIONS), (storageOptions) ->
-  for own key, value of DEFAULT_OPTIONS
-    options[key] = if storageOptions.hasOwnProperty key then storageOptions[key] else value
+  for own key, defaultValue of DEFAULT_OPTIONS
+    userSet = storageOptions.hasOwnProperty key
+    options[key] = if userSet then storageOptions[key] else defaultValue
   return
 
 D.addEventListener 'keydown', handleKeydownEvent, true

@@ -18,7 +18,7 @@ button:not([disabled]),
 embed + .fc-panel,
 embed ~ .PlaceholderFF,
 [ng-click],
-[data-ng-click],
+[data-ng-click]
 """
 # Unknown input types are treated as text inputs by Chrome
 # so we whitelist the ones we know can't be typed in.

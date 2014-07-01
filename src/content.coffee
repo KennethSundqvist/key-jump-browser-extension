@@ -337,7 +337,7 @@ handleKeyupEvent = (e) ->
   return
 
 stopKeyboardEvent = (e) ->
-  e.preDefault()
+  e.preventDefault()
   e.stopPropagation()
   e.stopImmediatePropagation()
   return

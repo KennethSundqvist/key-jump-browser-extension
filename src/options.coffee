@@ -30,12 +30,12 @@ setOptionInView = (option) ->
     if type == 'checkbox' then el.checked = value
     else el.value = value
 
-getOptionFromView = (event) ->
+getOptionFromView = (e) ->
   data = {}
-  type = event.target.getAttribute 'type'
-  key = event.target.getAttribute 'name'
-  if type == 'checkbox' then value = event.target.checked
-  else value = event.target.value.toLowerCase()
+  type = e.target.getAttribute 'type'
+  key = e.target.getAttribute 'name'
+  if type == 'checkbox' then value = e.target.checked
+  else value = e.target.value.toLowerCase()
   data[key] = value
   setOptionInStorage data
 

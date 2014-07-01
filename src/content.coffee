@@ -182,11 +182,11 @@ HintMode.prototype =
     hintsRootEl.classList.add CLASSNAME_ACTIVE
     return
 
-  appendToQuery: (event) ->
-    keyCode = event.keyCode
+  appendToQuery: (e) ->
+    keyCode = e.keyCode
     char = String.fromCharCode NUMPAD_KEY_CODES[keyCode] || keyCode
     if HINT_CHARACTERS.indexOf(char) > -1
-      stopKeyboardEvent event
+      stopKeyboardEvent e
       if @hints[@query + char]
         @query += char
         @filterHints()
@@ -203,12 +203,12 @@ HintMode.prototype =
         el.classList.add CLASSNAME_MATCH
     return
 
-  handleEscapeEvent: (event) ->
+  handleEscapeEvent: (e) ->
     if @query
       @query = ''
       @filterHints()
     else @deactivate()
-    stopKeyboardEvent event
+    stopKeyboardEvent e
     return
 
   triggerHintMatch: ->
@@ -278,23 +278,23 @@ isElementVisible = (el) ->
     el = el.parentElement
   true
 
-getCharacterFromEvent = (event) ->
-  keyIdentifier = (event.keyIdentifier).replace('U+', '\\u')
+getCharacterFromEvent = (e) ->
+  keyIdentifier = (e.keyIdentifier).replace('U+', '\\u')
   JSON.parse('"' + keyIdentifier + '"').toLowerCase()
 
-isActivationKey = (event) ->
-  getCharacterFromEvent(event) == options.activationChar &&
-    event.shiftKey == options.activationShift &&
-    event.ctrlKey == options.activationCtrl &&
-    event.altKey == options.activationAlt &&
-    event.metaKey == options.activationMeta
+isActivationKey = (e) ->
+  getCharacterFromEvent(e) == options.activationChar &&
+    e.shiftKey == options.activationShift &&
+    e.ctrlKey == options.activationCtrl &&
+    e.altKey == options.activationAlt &&
+    e.metaKey == options.activationMeta
 
-isActivationTabKey = (event) ->
-  getCharacterFromEvent(event) == options.activationTabChar &&
-    event.shiftKey == options.activationTabShift &&
-    event.ctrlKey == options.activationTabCtrl &&
-    event.altKey == options.activationTabAlt &&
-    event.metaKey == options.activationTabMeta
+isActivationTabKey = (e) ->
+  getCharacterFromEvent(e) == options.activationTabChar &&
+    e.shiftKey == options.activationTabShift &&
+    e.ctrlKey == options.activationTabCtrl &&
+    e.altKey == options.activationTabAlt &&
+    e.metaKey == options.activationTabMeta
 
 toggleHintMode = (openLinksInTabs) ->
   if hintMode
@@ -303,43 +303,43 @@ toggleHintMode = (openLinksInTabs) ->
     else hintMode.deactivate()
   else hintMode = new HintMode openLinksInTabs
 
-handleKeydownEvent = (event) ->
+handleKeydownEvent = (e) ->
   notInTypableElement = !canTypeInElement D.activeElement
   if notInTypableElement
-    hasModifier = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey
+    hasModifier = e.shiftKey || e.ctrlKey || e.altKey || e.metaKey
     hasMatch = hintMode && hintMode.hintMatch
-    isReturn = event.keyCode == KEYCODE_RETURN
-    isEscape = event.keyCode == KEYCODE_ESC
+    isReturn = e.keyCode == KEYCODE_RETURN
+    isEscape = e.keyCode == KEYCODE_ESC
     if hasMatch && isReturn && notInTypableElement
       # Use keyup for triggering, only prevent keydown
-      stopKeyboardEvent event
-    else if isActivationKey event
+      stopKeyboardEvent e
+    else if isActivationKey e
       toggleHintMode false
-      stopKeyboardEvent event
-    else if isActivationTabKey event
+      stopKeyboardEvent e
+    else if isActivationTabKey e
       toggleHintMode true
-      stopKeyboardEvent event
+      stopKeyboardEvent e
     else if !hasModifier && hintMode
-      if isEscape then hintMode.handleEscapeEvent event
-      else hintMode.appendToQuery event
+      if isEscape then hintMode.handleEscapeEvent e
+      else hintMode.appendToQuery e
   return
 
-handleKeyupEvent = (event) ->
+handleKeyupEvent = (e) ->
   # Use keyup for triggering, because if we focus the target
   # element on keydown there will be a keyup event on the
   # target element and that's annoying to deal with..
   hasMatch = hintMode && hintMode.hintMatch
-  isReturn = event.keyCode == KEYCODE_RETURN
+  isReturn = e.keyCode == KEYCODE_RETURN
   notInTypableElement = !canTypeInElement D.activeElement
   if hasMatch && isReturn && notInTypableElement
-    stopKeyboardEvent event
+    stopKeyboardEvent e
     hintMode.triggerHintMatch()
   return
 
-stopKeyboardEvent = (event) ->
-  event.preventDefault()
-  event.stopPropagation()
-  event.stopImmediatePropagation()
+stopKeyboardEvent = (e) ->
+  e.preDefault()
+  e.stopPropagation()
+  e.stopImmediatePropagation()
   return
 
 # Init

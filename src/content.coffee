@@ -48,6 +48,18 @@ DEFAULT_OPTIONS =
   activationTabMeta: false
   keepHintsAfterTrigger: false
   autoTrigger: true
+NUMPAD_KEY_CODES = {
+  96: 48 # 0
+  97: 49 # 1
+  98: 50 # 2
+  99: 51 # 3
+  100: 52 # 4
+  101: 53 # 5
+  102: 54 # 6
+  103: 55 # 7
+  104: 56 # 8
+  105: 57 # 9
+}
 
 options = {}
 hintsRootEl = D.createElement 'div'
@@ -171,7 +183,8 @@ HintMode.prototype =
     return
 
   appendToQuery: (event) ->
-    char = String.fromCharCode event.keyCode
+    keyCode = event.keyCode
+    char = String.fromCharCode NUMPAD_KEY_CODES[keyCode] || keyCode
     if HINT_CHARACTERS.indexOf(char) > -1
       stopKeyboardEvent event
       if @hints[@query + char]

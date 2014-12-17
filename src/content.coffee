@@ -165,12 +165,12 @@ HintMode.prototype =
       hint.el.setAttribute 'data-hint-id', hintKey
       hint.el.innerHTML = hintKey
       fragment.appendChild hint.el
-      targetPos = getElementPos(hint.target)
+      targetPos = hint.target.getClientRects()[0]
       top = Math.max(
-        D.body.scrollTop,
+        0,
         Math.min(
           Math.round(targetPos.top),
-          (winHeight + D.body.scrollTop) - @hintHeight
+          winHeight - @hintHeight
         )
       )
       hintCharWidth = @hintCharWidth * hintKey.length
@@ -248,18 +248,6 @@ shouldFocusElement = (el) ->
   tagName = el.tagName.toLocaleLowerCase()
   inputType = el.getAttribute 'type'
   canTypeInElement el || (tagName == 'input' && inputType == 'range')
-
-getElementPos = (el) ->
-  rect = el.getClientRects()[0]
-  return if !rect
-  scrollTop = W.scrollY
-  scrollLeft = W.scrollX
-  return {
-    top: rect.top + scrollTop
-    bottom: rect.bottom + scrollTop
-    right: rect.right + scrollLeft
-    left: rect.left + scrollLeft
-  }
 
 isElementVisible = (el) ->
   rect = el.getClientRects()[0]

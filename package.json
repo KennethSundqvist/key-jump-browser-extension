@@ -1,9 +1,23 @@
 {
   "name": "key-jump-chrome-extension",
   "version": "4.1.4",
-  "description": "A hit-a-hint keyboard extension that makes it easier for you to navigate the web.",
+  "description": "Easier keyboard navigation. No mouse needed to click on links and stuff.",
   "author": "Kenneth Sundqvist <eviloatmeal@gmail.com> (eviloatmeal.se)",
   "license": "MIT",
+  "private": true,
+  "scripts": {
+    "clean": "time ./npm-scripts/clean.sh",
+    "build": "time ./npm-scripts/build.sh",
+    "build:watch": "time ./npm-scripts/build.sh watch",
+    "dist": "time ./npm-scripts/dist.sh"
+  },
   "devDependencies": {
+    "autoprefixer": "~6.4.1",
+    "css-loader": "~0.25.0",
+    "extract-text-webpack-plugin": "~1.0.1",
+    "postcss-loader": "~0.13.0",
+    "postcss-nested": "~1.0.0",
+    "style-loader": "~0.13.1",
+    "webpack": "~1.13.1"
   }
 }

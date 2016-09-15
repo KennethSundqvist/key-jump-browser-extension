@@ -2,8 +2,8 @@
     "manifest_version": 2,
 
     "name": "Key Jump",
-    "description": "A hit-a-hint keyboard extension that makes it easier for you to navigate the web.",
-    "version": "$version",
+    "description": "Easier keyboard navigation. No mouse needed to click on links and stuff.",
+    "version": "{{version}}",
     "author": "Kenneth Sundqvist <eviloatmeal@gmail.com>",
     "homepage_url": "https://github.com/EvilOatmeal/key-jump-chrome-extension",
 
@@ -17,7 +17,10 @@
         "storage"
     ],
 
-    "options_page": "options.html",
+    "options_ui": {
+        "page": "options.html",
+        "chrome_style": true
+    },
 
     "content_scripts": [{
         "matches": ["*://*/*", "ftp://*/*"],

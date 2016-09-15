@@ -1,5 +1,4 @@
 .idea
-.sass-cache
 build
 dist
 node_modules

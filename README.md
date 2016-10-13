@@ -10,9 +10,9 @@ This Chrome extension makes it easier for you to click on links and stuff withou
 
 ## How to use
 
-Press , (comma) on your keyboard to show hints for all links, buttons, text fields and other things you can click or focus.
+Press `,` (comma) on your keyboard to show hints for all links, buttons, text fields and other things you can click or focus.
 
-Press . (period) instead to open links in new tabs when they are clicked.
+Press `.` (period) instead to open links in new tabs when they are clicked.
 
 These shortcuts can be changed in the extension options.
 

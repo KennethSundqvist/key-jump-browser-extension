@@ -15,7 +15,7 @@
     <h2>Find these</h2>
 
     <p><a href="#"><code>a</code> element</a> with <code>href</code> attribute.</p>
-    <p><a href="#"><span style="display:inline-block;width:0;overflow:hidden;">.</span> <code>a</code> element</a> with a 0 width span as its first child.</p>
+    <p><a href="#"><span style="display:inline-block;width:0;overflow:hidden;">.</span> <code>a</code> element</a> with a first child node that has 0 width.</p>
     <p>Input <input></p>
     <p>Textarea <textarea></textarea></p>
     <p>contenteditable <span contenteditable>This is a span</span></p>
@@ -85,6 +85,8 @@
     <h2>Positioning</h2>
 
     <p>An inline element <a href="#">that wraps<br> to two lines</a> should render the hint at the beginning of the first line.</p>
+
+    <p>An inline element with <a href="#"><span style="display:inline-block;width:0;overflow:hidden;">.</span><br> a first child node that has 0 width</a> should render the hint at the beginning of the first visible child node.</p>
   </div>
 </div>
 

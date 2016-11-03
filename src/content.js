@@ -399,7 +399,8 @@ function renderHints() {
 
 		fragment.appendChild(hint.hintEl)
 
-		const targetPos = hint.targetEl.getClientRects()[0]
+		const rects = hint.targetEl.getClientRects()
+		const targetPos = Array.from(rects).find(isRectVisible)
 		const hintCharWidth = cache.hintCharWidth * hint.id.length
 
 		const top = Math.max(
@@ -472,15 +473,9 @@ function delayedCleanupFactory() {
 }
 
 function isElementVisible(el) {
-	var rect = el.getBoundingClientRect()
+	const rect = el.getBoundingClientRect()
 
-	if (!rect ||
-		rect.width <= 0 ||
-		rect.height <= 0 ||
-		rect.top >= document.documentElement.clientHeight ||
-		rect.left >= document.documentElement.clientWidth ||
-		rect.bottom <= 0 ||
-		rect.right <= 0) {
+	if (!isRectVisible(rect)) {
 		return false
 	}
 
@@ -492,6 +487,22 @@ function isElementVisible(el) {
 			return false
 		}
 		el = el.parentElement
+	}
+
+	return true
+}
+
+function isRectVisible(rect) {
+	if (
+		!rect ||
+		rect.width <= 0 ||
+		rect.height <= 0 ||
+		rect.top >= document.documentElement.clientHeight ||
+		rect.left >= document.documentElement.clientWidth ||
+		rect.bottom <= 0 ||
+		rect.right <= 0
+	) {
+		return false
 	}
 
 	return true

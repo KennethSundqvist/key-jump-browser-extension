@@ -399,6 +399,8 @@ function renderHints() {
 
 		fragment.appendChild(hint.hintEl)
 
+		// TODO: Refactor to find the first visible child element instead of rect.
+		// We must check both the element rect and styles to see if it is visible.
 		const rects = hint.targetEl.getClientRects()
 		const targetPos = Array.from(rects).find(isRectVisible)
 		const hintCharWidth = cache.hintCharWidth * hint.id.length
@@ -482,11 +484,15 @@ function isElementVisible(el) {
 		return false
 	}
 
+	// These overflow values will hide the overflowing child elements.
+	const hidingOverflows = ['hidden', 'auto', 'scroll']
+
 	while (el) {
 		const styles = window.getComputedStyle(el)
 
 		if (
-			isRectCollapsed(rect) ||
+			(rect.width <= 0 && hidingOverflows.includes(styles['overflow-x'])) ||
+			(rect.height <= 0 && hidingOverflows.includes(styles['overflow-y'])) ||
 			styles.display === 'none' ||
 			styles.visibility === 'hidden' ||
 			styles.opacity === '0'
@@ -505,7 +511,11 @@ function isElementVisible(el) {
 }
 
 function isRectVisible(rect) {
-	return isRectInViewport(rect) && !isRectCollapsed(rect)
+	// TODO: BUG
+	// This will report false even if the element the rect is for has a visible
+	// overflow which means that the content is still visible even though the
+	// element has 0 width/height.
+	return isRectInViewport(rect) && rect.width > 0 && rect.height > 0;
 }
 
 function isRectInViewport(rect) {
@@ -520,18 +530,6 @@ function isRectInViewport(rect) {
 	}
 
 	return true
-}
-
-function isRectCollapsed(rect) {
-	if (
-		!rect ||
-		rect.width <= 0 ||
-		rect.height <= 0
-	) {
-		return true
-	}
-
-	return false
 }
 
 function setupRendering() {

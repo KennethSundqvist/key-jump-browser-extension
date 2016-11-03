@@ -402,7 +402,8 @@ function renderHints() {
 		// TODO: Refactor to find the first visible child element instead of rect.
 		// We must check both the element rect and styles to see if it is visible.
 		const rects = hint.targetEl.getClientRects()
-		const targetPos = Array.from(rects).find(isRectVisible)
+		// If none of the rects are visible use the first rect as a workaround...
+		const targetPos = Array.from(rects).find(isRectVisible) || rects[0]
 		const hintCharWidth = cache.hintCharWidth * hint.id.length
 
 		const top = Math.max(

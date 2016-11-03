@@ -473,30 +473,44 @@ function delayedCleanupFactory() {
 }
 
 function isElementVisible(el) {
-	const rect = el.getBoundingClientRect()
+	let rect = el.getBoundingClientRect()
 
-	if (!isRectVisible(rect)) {
+	// Only check if the initial element is in the viewport since it could be
+	// positioned outside its parent elements which themselves could be outside
+	// the viewport.
+	if (!isRectInViewport(rect)) {
 		return false
 	}
 
 	while (el) {
-		var styles = window.getComputedStyle(el)
-		if (styles.display == 'none' ||
-			styles.visibility == 'hidden' ||
-			styles.opacity == '0') {
+		const styles = window.getComputedStyle(el)
+
+		if (
+			isRectCollapsed(rect) ||
+			styles.display === 'none' ||
+			styles.visibility === 'hidden' ||
+			styles.opacity === '0'
+		) {
 			return false
 		}
+
 		el = el.parentElement
+
+		if (el) {
+			rect = el.getBoundingClientRect()
+		}
 	}
 
 	return true
 }
 
 function isRectVisible(rect) {
+	return isRectInViewport(rect) && !isRectCollapsed(rect)
+}
+
+function isRectInViewport(rect) {
 	if (
 		!rect ||
-		rect.width <= 0 ||
-		rect.height <= 0 ||
 		rect.top >= document.documentElement.clientHeight ||
 		rect.left >= document.documentElement.clientWidth ||
 		rect.bottom <= 0 ||
@@ -506,6 +520,18 @@ function isRectVisible(rect) {
 	}
 
 	return true
+}
+
+function isRectCollapsed(rect) {
+	if (
+		!rect ||
+		rect.width <= 0 ||
+		rect.height <= 0
+	) {
+		return true
+	}
+
+	return false
 }
 
 function setupRendering() {

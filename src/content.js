@@ -125,7 +125,6 @@ function handleKeyup(event) {
 		// target element and that's annoying to deal with.
 		stopKeyboardEvent(event)
 		triggerMatchingHint()
-		deactivateHintMode()
 	}
 }
 
@@ -224,12 +223,16 @@ function handleQueryKey(event) {
 			state.hints.length < newQueryAsInt * 10
 		) {
 			triggerMatchingHint()
-			deactivateHintMode()
 		}
 	}
 }
 
 function triggerMatchingHint() {
+	// Stop refreshing before triggering because the triggering could cause a
+	// refresh, for example when triggering a fragment link and the page scrolls,
+	// and that breaks the clean-up when deactivating.
+	state.removeRefreshHintsEventListeners()
+
 	const {
 		matchingHint: {
 			targetEl
@@ -252,6 +255,10 @@ function triggerMatchingHint() {
 
 		targetEl.dispatchEvent(mouseEvent)
 	}
+
+	// Deactivation is done after the triggering is complete since it resets the
+	// hints stuff in the state, which we need when triggering.
+	deactivateHintMode()
 }
 
 function activateHintMode() {
@@ -282,12 +289,17 @@ function activateHintMode() {
 		document.removeEventListener('scroll', refreshHintsHandler)
 		window.removeEventListener('resize', refreshHintsHandler)
 		window.removeEventListener('popstate', refreshHintsHandler)
+
+		// Removes itself so it can't be called multiple times, and to clean up
+		// memory usage.
+		state.removeRefreshHintsEventListeners = null
 	}
 }
 
 function deactivateHintMode() {
-	state.removeRefreshHintsEventListeners()
-	state.removeRefreshHintsEventListeners = null
+	if (state.removeRefreshHintsEventListeners) {
+		state.removeRefreshHintsEventListeners()
+	}
 
 	// We have to wait for the opacity transition to end before we can
 	// clean things up.

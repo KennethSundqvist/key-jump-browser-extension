@@ -472,7 +472,7 @@ function delayedCleanupFactory() {
 }
 
 function isElementVisible(el) {
-	var rect = el.getClientRects()[0]
+	var rect = el.getBoundingClientRect()
 
 	if (!rect ||
 		rect.width <= 0 ||

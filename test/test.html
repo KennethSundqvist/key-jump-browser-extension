@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Key Jump testing</title>
+  <style>
+    /* Chrome removes this for some unkown reason... */
+    input[readonly]:focus {
+      outline: -webkit-focus-ring-color auto 5px;
+    }
+  </style>
 </head>
 <body>
 
@@ -17,7 +23,9 @@
     <p><a href="#"><code>a</code> element</a> with <code>href</code> attribute.</p>
     <p><a href="#"><span style="display:inline-block;width:0;overflow:hidden;">.</span> <code>a</code> element</a> with a first child node that has 0 width.</p>
     <p>Input <input></p>
+    <p>Input with readonly attribute <input readonly></p>
     <p>Textarea <textarea></textarea></p>
+    <p>Textarea with readonly attribute  <textarea readonly></textarea></p>
     <p>contenteditable <span contenteditable>This is a span</span></p>
     <p>contenteditable=true <span contenteditable="true">This is a span</span></p>
     <p>Checkbox <input type="checkbox"></p>
@@ -56,6 +64,8 @@
   <div class="col">
     <h2>Activate when these are focused</h2>
 
+    <p>Input with readonly attribute <input readonly></p>
+    <p>Textarea with readonly attribute  <textarea readonly></textarea></p>
     <p>input type=button <input type="button"></p>
     <p>input type=submit <input type="submit"></p>
     <p>input type=reset <input type="reset"></p>

@@ -14,8 +14,10 @@ Press `,` (comma) on your keyboard to show hints for all links, buttons, text fi
 
 Press `.` (period) instead to open links in new tabs when they are clicked.
 
-These shortcuts can be changed in the extension options.
+Press `Enter` to trigger the hint for the number you've typed. For example when there are 10 links on the page you should press `1` > `Enter` to trigger the first hint.
 
-Hints will be automatically triggered when possible. You can disable this in the extension options.
+The hint will be automatically triggered when the number you've typed can't match any other hints. You can disable this in the extension options so you'll aways have to use `Enter` to trigger them.
 
-Press Escape to hide the hints.
+Press `Escape` to hide the hints.
+
+Some of these shortcuts can be changed in the extension options.

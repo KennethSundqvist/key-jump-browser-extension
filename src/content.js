@@ -493,19 +493,25 @@ function isElementVisible(el) {
 
 	// These overflow values will hide the overflowing child elements.
 	const hidingOverflows = ['hidden', 'auto', 'scroll']
+	const allowedCollapsedTags = ['html', 'body']
 
 	while (el) {
 		const styles = window.getComputedStyle(el)
 
 		if (
-			(rect.width <= 0 && hidingOverflows.includes(styles['overflow-x'])) ||
-			(rect.height <= 0 && hidingOverflows.includes(styles['overflow-y'])) ||
 			styles.display === 'none' ||
 			styles.visibility === 'hidden' ||
-			styles.opacity === '0'
-		) {
-			return false
-		}
+			styles.opacity === '0' ||
+			(
+				(
+					(rect.width <= 0 && hidingOverflows.includes(styles['overflow-x'])) ||
+					(rect.height <= 0 && hidingOverflows.includes(styles['overflow-y']))
+				) &&
+				!allowedCollapsedTags.includes(el.tagName.toLowerCase())
+			)
+    ) {
+      return false
+    }
 
 		el = el.parentElement
 

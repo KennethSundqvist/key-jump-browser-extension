@@ -8,6 +8,12 @@
     input[readonly]:focus {
       outline: -webkit-focus-ring-color auto 5px;
     }
+
+    /* Test allowed collapsed tags when checking if an element is visible or not. */
+    body {
+      height: 0;
+      overflow-y: scroll;
+    }
   </style>
 </head>
 <body>

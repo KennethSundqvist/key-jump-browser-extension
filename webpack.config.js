@@ -2,37 +2,52 @@
 
 'use strict'
 
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const postcssNested = require('postcss-nested')
 const autoprefixer = require('autoprefixer')
+const path = require('path')
 
 module.exports = {
-	entry: {
-		'content': './src/content',
-		'options': './src/options'
-	},
-	output: {
-		path: './build/',
-		filename: '[name].js'
-	},
-	module: {
-		loaders: [
-			{
-				test: /\.css$/,
-				loader: ExtractTextPlugin.extract(
-					'style-loader',
-					'css-loader!postcss-loader'
-				)
-			}
-		]
-	},
-	plugins: [
-		new ExtractTextPlugin('[name].css')
-	],
-	postcss: function() {
-		return [
-			postcssNested,
-			autoprefixer
-		]
-	}
+	mode: 'development',
+  entry: {
+    content: './src/content',
+    options: './src/options',
+  },
+  output: {
+    path: path.resolve(__dirname, 'build'),
+    filename: '[name].js',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+            },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: [
+								postcssNested,
+								autoprefixer,
+							],
+            },
+          },
+        ],
+      },
+    ],
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css',
+    }),
+  ],
 }

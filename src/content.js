@@ -358,7 +358,10 @@ function findHints() {
 		'select:not([disabled])',
 		'button:not([disabled])',
 		'[contenteditable]:not([contenteditable=false]):not([disabled])',
-		'[ng-click]:not([disabled])'
+		'[ng-click]:not([disabled])',
+		// GWT Anchor widget class
+		// http://www.gwtproject.org/javadoc/latest/com/google/gwt/user/client/ui/Anchor.html
+		'.gwt-Anchor'
 	].join(','))
 
 	let hintId = 1

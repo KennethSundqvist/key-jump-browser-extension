@@ -352,6 +352,9 @@ function clearFilterFromHints() {
 
 function findHints() {
 	const targetEls = state.rootEl.querySelectorAll([
+		// Don't search for 'a' to avoid finding elements used only for fragment
+		// links (jump to a point in a page) which sometimes mess up the hint
+		// numbering or it looks like they can be clicked when they can't.
 		'a[href]',
 		'input:not([disabled]):not([type=hidden])',
 		'textarea:not([disabled])',

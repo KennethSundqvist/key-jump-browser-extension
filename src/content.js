@@ -2,9 +2,6 @@
 
 'use strict'
 
-const styles = require('./content.css') // eslint-disable-line no-unused-vars
-const bootstrapState = require('./bootstrap-state')
-
 // Initialize
 
 const state = {
@@ -25,7 +22,14 @@ const state = {
 	renderCache: null
 }
 
-bootstrapState(state, setup)
+// Chrome content script don't support static ES imports.
+// https://stackoverflow.com/a/53033388/1072649
+;(async () => {
+	const url = chrome.runtime.getURL('bootstrap-state.js')
+	const bootstrapState = await import(url)
+
+	bootstrapState.default(state, setup)
+})()
 
 // Stuff
 

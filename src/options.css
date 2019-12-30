@@ -23,41 +23,41 @@
 	align-items: center;
 	min-height: var(--shortcut-input-height);
 	margin-top: var(--option-margin);
+}
 
-	&-shortcut {
-		align-items: baseline;
+.option-shortcut {
+	align-items: baseline;
+}
 
-		& label {
-			flex: 1;
-			-webkit-padding-end: var(--option-margin);
-		}
+.option-shortcut label {
+	flex: 1;
+	-webkit-padding-end: var(--option-margin);
+}
 
-		/*
-			Taken from the class ".command-shortcut" in the built in Chrome 52 options
-			styles.
-		*/
-		& input {
-			display: inline-block;
-			min-width: 12.5em;
-			min-height: var(--shortcut-input-height);
-			padding: 3px 0 1px 4px;
-			/*
-				Transparent color hides the caret in the input.
-				The shortcut text is shown using the placeholder property.
-			*/
-			color: transparent;
-			border: solid 1px #BFBFBF;
-			border-radius: 2px;
-			font-size: inherit;
+/*
+	Taken from the class ".command-shortcut" in the built in Chrome 52 options
+	styles.
+*/
+.option-shortcut input {
+	display: inline-block;
+	min-width: 12.5em;
+	min-height: var(--shortcut-input-height);
+	padding: 3px 0 1px 4px;
+	/*
+		Transparent color hides the caret in the input.
+		The shortcut text is shown using the placeholder property.
+	*/
+	color: transparent;
+	border: solid 1px #BFBFBF;
+	border-radius: 2px;
+	font-size: inherit;
+}
 
-			&:focus {
-				background: rgb(243, 244, 255);
-				border-color: rgb(140, 147, 255);
-			}
+.option-shortcut input:focus {
+	background: rgb(243, 244, 255);
+	border-color: rgb(140, 147, 255);
+}
 
-			&::placeholder {
-				color: rgb(48, 57, 66);
-			}
-		}
-	}
+.option-shortcut input::placeholder {
+	color: rgb(48, 57, 66);
 }

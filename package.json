@@ -6,18 +6,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "clean": "time ./npm-scripts/clean.sh",
-    "build": "time ./npm-scripts/build.sh",
-    "build:watch": "time ./npm-scripts/build.sh watch",
     "dist": "time ./npm-scripts/dist.sh"
   },
-  "devDependencies": {
-    "autoprefixer": "9.7.3",
-    "css-loader": "3.4.0",
-    "mini-css-extract-plugin": "0.9.0",
-    "postcss-loader": "3.0.0",
-    "postcss-nested": "4.2.1",
-    "webpack": "4.41.5",
-    "webpack-cli": "3.3.10"
-  }
+  "devDependencies": {}
 }

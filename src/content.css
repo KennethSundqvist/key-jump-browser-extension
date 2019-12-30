@@ -17,31 +17,31 @@
 	z-index: var(--zindex);
 	opacity: 0;
 	pointer-events: none;
+}
 
-	&_active {
-		opacity: 1;
-	}
+.KEYJUMP_active {
+	opacity: 1;
+}
 
-	&_hint {
-		transition: opacity 0.2s;
-		position: absolute;
-		padding: 2px 3px;
-		color: var(--color-text);
-		background: var(--color-bg);
-		border: 1px solid var(--color-border);
-		border-radius: 2px;
-		box-shadow: var(--shadow-highlight), var(--shadow-drop);
-		font: 13px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
-		letter-spacing: 1px;
-		text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-		white-space: nowrap;
-	}
+.KEYJUMP_hint {
+	transition: opacity 0.2s;
+	position: absolute;
+	padding: 2px 3px;
+	color: var(--color-text);
+	background: var(--color-bg);
+	border: 1px solid var(--color-border);
+	border-radius: 2px;
+	box-shadow: var(--shadow-highlight), var(--shadow-drop);
+	font: 13px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+	letter-spacing: 1px;
+	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+	white-space: nowrap;
+}
 
-	&_filtered &_hint {
-		opacity: 0;
-	}
+.KEYJUMP_filtered .KEYJUMP_hint {
+	opacity: 0;
+}
 
-	&_filtered &_match {
-		opacity: 1;
-	}
+.KEYJUMP_filtered .KEYJUMP_match {
+	opacity: 1;
 }

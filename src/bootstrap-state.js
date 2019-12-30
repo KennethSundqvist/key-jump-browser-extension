@@ -3,7 +3,7 @@
 
 'use strict'
 
-module.exports = function bootstrapState(state = {}, callback) {
+export default function bootstrapState(state = {}, callback) {
 	let gotInfo = false
 	let gotOptions = false
 

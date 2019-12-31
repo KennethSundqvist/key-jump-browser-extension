@@ -6,7 +6,15 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "lint": "prettier --check \"**/*.{md,json,js,css,html}\" && eslint .",
+    "lint:fix": "prettier --write \"**/*.{md,json,js,css,html}\" && eslint --fix .",
+    "test": "npm run lint",
     "dist": "time ./npm-scripts/dist.sh"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "babel-eslint": "10.0.3",
+    "eslint": "6.8.0",
+    "eslint-config-prettier": "6.9.0",
+    "prettier": "1.19.1"
+  }
 }

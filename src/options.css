@@ -3,35 +3,35 @@
 */
 
 :root {
-	/*
+  /*
 		Can't use 'rem' unit since the built in styles set the font-size on the
 		'body' element instead of 'html' (:root).
 	*/
-	--section-margin: 1.5em;
+  --section-margin: 1.5em;
 
-	--option-margin: 0.5em;
+  --option-margin: 0.5em;
 
-	--shortcut-input-height: 2em;
+  --shortcut-input-height: 2em;
 }
 
 .section + .section {
-	margin-top: var(--section-margin);
+  margin-top: var(--section-margin);
 }
 
 .option {
-	display: flex;
-	align-items: center;
-	min-height: var(--shortcut-input-height);
-	margin-top: var(--option-margin);
+  display: flex;
+  align-items: center;
+  min-height: var(--shortcut-input-height);
+  margin-top: var(--option-margin);
 }
 
 .option-shortcut {
-	align-items: baseline;
+  align-items: baseline;
 }
 
 .option-shortcut label {
-	flex: 1;
-	-webkit-padding-end: var(--option-margin);
+  flex: 1;
+  -webkit-padding-end: var(--option-margin);
 }
 
 /*
@@ -39,25 +39,25 @@
 	styles.
 */
 .option-shortcut input {
-	display: inline-block;
-	min-width: 12.5em;
-	min-height: var(--shortcut-input-height);
-	padding: 3px 0 1px 4px;
-	/*
+  display: inline-block;
+  min-width: 12.5em;
+  min-height: var(--shortcut-input-height);
+  padding: 3px 0 1px 4px;
+  /*
 		Transparent color hides the caret in the input.
 		The shortcut text is shown using the placeholder property.
 	*/
-	color: transparent;
-	border: solid 1px #BFBFBF;
-	border-radius: 2px;
-	font-size: inherit;
+  color: transparent;
+  border: solid 1px #bfbfbf;
+  border-radius: 2px;
+  font-size: inherit;
 }
 
 .option-shortcut input:focus {
-	background: rgb(243, 244, 255);
-	border-color: rgb(140, 147, 255);
+  background: rgb(243, 244, 255);
+  border-color: rgb(140, 147, 255);
 }
 
 .option-shortcut input::placeholder {
-	color: rgb(48, 57, 66);
+  color: rgb(48, 57, 66);
 }

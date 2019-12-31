@@ -1,168 +1,307 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Key Jump testing</title>
-  <style>
-    /* Chrome removes this for some unkown reason... */
-    input[readonly]:focus {
-      outline: -webkit-focus-ring-color auto 5px;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <title>Key Jump testing</title>
+    <style>
+      /* Chrome removes this for some unkown reason... */
+      input[readonly]:focus {
+        outline: -webkit-focus-ring-color auto 5px;
+      }
 
-    /* Test allowed collapsed tags when checking if an element is visible or not. */
-    body {
-      height: 0;
-      overflow-y: scroll;
-    }
-  </style>
-</head>
-<body>
+      /* Test allowed collapsed tags when checking if an element is visible or not. */
+      body {
+        height: 0;
+        overflow-y: scroll;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Key Jump testing</h1>
 
-<h1>Key Jump testing</h1>
+    <div id="prevent-event-visualizer">
+      This should not change background color when a (de)activation key is
+      pressed, or a hint label key is pressed while keyjump is active.
+    </div>
 
-<div id="prevent-event-visualizer">This should not change background color when a (de)activation key is pressed, or a hint label key is pressed while keyjump is active.</div>
+    <div class="clearfix">
+      <div class="col">
+        <h2>Find these</h2>
 
-<div class="clearfix">
-  <div class="col">
-    <h2>Find these</h2>
+        <p>
+          <a href="#"><code>a</code> element</a> with
+          <code>href</code> attribute.
+        </p>
+        <p>
+          <a href="#">
+            <span style="display:inline-block;width:0;overflow:hidden;">
+              .
+            </span>
+            <code>a</code> element
+          </a>
+          with a first child node that has 0 width.
+        </p>
+        <p>Input <input /></p>
+        <p>Input with readonly attribute <input readonly /></p>
+        <p>Textarea <textarea></textarea></p>
+        <p>Textarea with readonly attribute <textarea readonly></textarea></p>
+        <p>contenteditable <span contenteditable>This is a span</span></p>
+        <p>
+          contenteditable=true
+          <span contenteditable="true">This is a span</span>
+        </p>
+        <p>Checkbox <input type="checkbox" /></p>
+        <p>Radio <input type="radio" /></p>
+        <p>
+          Select
+          <select>
+            <option value="">Hello</option>
+            <option value="">World</option>
+          </select>
+        </p>
+        <p>
+          Inside parent with width:0 and visible overflow:
+          <span style="display:inline-block;width: 0;">
+            <a href="#">Hello!</a>
+          </span>
+        </p>
+        <p>
+          Inside parent with height:0 and visible overflow:
+          <span style="display:inline-block;height: 0;">
+            <a href="#">Hello!</a>
+          </span>
+        </p>
+        <p>
+          With no visible children:
+          <a href="#">
+            <span style="display:inline-block;width:0;overflow: hidden">
+              Hello!
+            </span>
+          </a>
+        </p>
+        <p>Elements with AngularJS 1 ngClick bindings:</p>
+        <ul>
+          <li><code ng-click="hello :)">ng-click</code></li>
+          <li><code ng-click="there :D">data-ng-click</code></li>
+        </ul>
+        <p>
+          GWT Anchor widget class:
+          <!-- http://www.gwtproject.org/javadoc/latest/com/google/gwt/user/client/ui/Anchor.html -->
+          <a class="gwt-Anchor">.gwt-Anchor</a>
+        </p>
+      </div>
 
-    <p><a href="#"><code>a</code> element</a> with <code>href</code> attribute.</p>
-    <p><a href="#"><span style="display:inline-block;width:0;overflow:hidden;">.</span> <code>a</code> element</a> with a first child node that has 0 width.</p>
-    <p>Input <input></p>
-    <p>Input with readonly attribute <input readonly></p>
-    <p>Textarea <textarea></textarea></p>
-    <p>Textarea with readonly attribute  <textarea readonly></textarea></p>
-    <p>contenteditable <span contenteditable>This is a span</span></p>
-    <p>contenteditable=true <span contenteditable="true">This is a span</span></p>
-    <p>Checkbox <input type="checkbox"></p>
-    <p>Radio <input type="radio"></p>
-    <p>Select <select><option value="">Hello</option><option value="">World</option></select></p>
-    <p>Inside parent with width:0 and visible overflow: <span style="display:inline-block;width: 0;"><a href="#">Hello!</a></span></p>
-    <p>Inside parent with height:0 and visible overflow: <span style="display:inline-block;height: 0;"><a href="#">Hello!</a></span></p>
-    <p>With no visible children: <a href="#"><span style="display:inline-block;width:0;overflow: hidden">Hello!</span></a></p>
-    <p>Elements with AngularJS 1 ngClick bindings:</p>
-		<ul>
-			<li><code ng-click="hello :)">ng-click</code></li>
-			<li><code ng-click="there :D">data-ng-click</code></li>
-		</ul>
-    <a>
-      GWT Anchor widget class:
-      <!-- http://www.gwtproject.org/javadoc/latest/com/google/gwt/user/client/ui/Anchor.html -->
-      <a class="gwt-Anchor">.gwt-Anchor</a>
-    </p>
-  </div>
+      <div class="col">
+        <h2>Do not find these</h2>
 
-  <div class="col">
-    <h2>Do not find these</h2>
+        <p>
+          <a><code>a</code> element</a> without <code>href</code> attribute
+        </p>
+        <p>Hidden input <input type="hidden" /></p>
+        <p>Disabled input <input disabled="disabled" /></p>
+        <p>Disabled textarea <textarea disabled="disabled"></textarea></p>
+        <p>
+          contenteditable=false
+          <span contenteditable="false">This is a span</span>
+        </p>
+        <p>
+          Disabled select
+          <select disabled="disabled">
+            <option value="">Hello</option>
+            <option value="">World</option>
+          </select>
+        </p>
+        <p>
+          Inside parent with width:0 and overflow:hidden:
+          <span style="display:inline-block;width:0;overflow:hidden;">
+            <a href="#">Hello!</a>
+          </span>
+        </p>
+        <p>
+          Inside parent with width:0 and overflow:auto:
+          <span style="display:inline-block;width:0;overflow:auto;">
+            <a href="#">Hello!</a>
+          </span>
+        </p>
+        <p>
+          Inside parent with width:0 and overflow:scroll:
+          <span style="display:inline-block;width:0;overflow:scroll;">
+            <a href="#">Hello!</a>
+          </span>
+        </p>
+        <p>
+          Inside parent with height:0 and overflow:hidden:
+          <span style="display:inline-block;height:0;overflow:hidden;">
+            <a href="#">Hello!</a>
+          </span>
+        </p>
+        <p>
+          Inside parent with height:0 and overflow:auto:
+          <span style="display:inline-block;height:0;overflow:auto;">
+            <a href="#">Hello!</a>
+          </span>
+        </p>
+        <p>
+          Inside parent with height:0 and overflow:scroll:
+          <span style="display:inline-block;height:0;overflow:scroll;">
+            <a href="#">Hello!</a>
+          </span>
+        </p>
+        <p>
+          Inside parent with opacity 0:
+          <span style="opacity: 0;"><a href="#">Hello!</a></span>
+        </p>
+      </div>
+    </div>
 
-    <p><a><code>a</code> element</a> without <code>href</code> attribute</p>
-    <p>Hidden input <input type="hidden"></p>
-    <p>Disabled input <input disabled="disabled"></p>
-    <p>Disabled textarea <textarea disabled="disabled"></textarea></p>
-    <p>contenteditable=false <span contenteditable="false">This is a span</span></p>
-    <p>Disabled select <select disabled="disabled"><option value="">Hello</option><option value="">World</option></select></p>
-    <p>Inside parent with width:0 and overflow:hidden: <span style="display:inline-block;width:0;overflow:hidden;"><a href="#">Hello!</a></span></p>
-    <p>Inside parent with width:0 and overflow:auto: <span style="display:inline-block;width:0;overflow:auto;"><a href="#">Hello!</a></span></p>
-    <p>Inside parent with width:0 and overflow:scroll: <span style="display:inline-block;width:0;overflow:scroll;"><a href="#">Hello!</a></span></p>
-    <p>Inside parent with height:0 and overflow:hidden: <span style="display:inline-block;height:0;overflow:hidden;"><a href="#">Hello!</a></span></p>
-    <p>Inside parent with height:0 and overflow:auto: <span style="display:inline-block;height:0;overflow:auto;"><a href="#">Hello!</a></span></p>
-    <p>Inside parent with height:0 and overflow:scroll: <span style="display:inline-block;height:0;overflow:scroll;"><a href="#">Hello!</a></span></p>
-    <p>Inside parent with opacity 0: <span style="opacity: 0;"><a href="#">Hello!</a></span></p>
-  </div>
-</div>
+    <div class="clearfix">
+      <div class="col">
+        <h2>Activate when these are focused</h2>
 
-<div class="clearfix">
-  <div class="col">
-    <h2>Activate when these are focused</h2>
+        <p>Input with readonly attribute <input readonly /></p>
+        <p>Textarea with readonly attribute <textarea readonly></textarea></p>
+        <p>input type=button <input type="button" /></p>
+        <p>input type=submit <input type="submit" /></p>
+        <p>input type=reset <input type="reset" /></p>
+        <p>input type=image <input type="image" /></p>
+        <p>input type=checkbox <input type="checkbox" /></p>
+        <p>input type=radio <input type="radio" /></p>
+        <p>input type=range <input type="range" /></p>
+        <p>input type=color <input type="color" /></p>
+        <p>input type=file <input type="file" /></p>
+        <p>
+          Select
+          <select>
+            <option value="">Hello</option>
+            <option value="">World</option>
+          </select>
+        </p>
+        <p>
+          contenteditable=false & tabindex=0
+          <span contenteditable="false" tabindex="0">This is a span</span>
+        </p>
+      </div>
 
-    <p>Input with readonly attribute <input readonly></p>
-    <p>Textarea with readonly attribute  <textarea readonly></textarea></p>
-    <p>input type=button <input type="button"></p>
-    <p>input type=submit <input type="submit"></p>
-    <p>input type=reset <input type="reset"></p>
-    <p>input type=image <input type="image"></p>
-    <p>input type=checkbox <input type="checkbox"></p>
-    <p>input type=radio <input type="radio"></p>
-    <p>input type=range <input type="range"></p>
-    <p>input type=color <input type="color"></p>
-    <p>input type=file <input type="file"></p>
-    <p>Select <select><option value="">Hello</option><option value="">World</option></select></p>
-    <p>contenteditable=false & tabindex=0 <span contenteditable="false" tabindex="0">This is a span</span></p>
-  </div>
+      <div class="col">
+        <h2>Do not activate when these are focused</h2>
 
-  <div class="col">
-    <h2>Do not activate when these are focused</h2>
+        <p>input <input /></p>
+        <p>Textarea <textarea></textarea></p>
+        <p>contenteditable <span contenteditable>This is a span</span></p>
+        <p>
+          contenteditable=true
+          <span contenteditable="true">This is a span</span>
+        </p>
+        <p>input type=datetime-local <input type="datetime-local" /></p>
+        <p>input type=date <input type="date" /></p>
+        <p>input type=time <input type="time" /></p>
+        <p>input type=month <input type="month" /></p>
+        <p>input type=week <input type="week" /></p>
+      </div>
+    </div>
 
-    <p>input <input></p>
-    <p>Textarea <textarea></textarea></p>
-    <p>contenteditable <span contenteditable>This is a span</span></p>
-    <p>contenteditable=true <span contenteditable="true">This is a span</span></p>
-    <p>input type=datetime-local <input type="datetime-local"></p>
-    <p>input type=date <input type="date"></p>
-    <p>input type=time <input type="time"></p>
-    <p>input type=month <input type="month"></p>
-    <p>input type=week <input type="week"></p>
-  </div>
-</div>
+    <div class="clearfix">
+      <div class="col">
+        <h2>Events</h2>
 
-<div class="clearfix">
-  <div class="col">
-    <h2>Events</h2>
+        <p>
+          <input id="dont-run-this-when-focused-with-enter-key" />
+          This input should not lose focus when its hint is triggered using the
+          <kbd>enter</kbd> key.
+        </p>
+      </div>
 
-    <p><input id="dont-run-this-when-focused-with-enter-key"> This input should not lose focus when its hint is triggered using the <kbd>enter</kbd> key.</p>
-  </div>
+      <div class="col">
+        <h2>Positioning</h2>
 
-  <div class="col">
-    <h2>Positioning</h2>
+        <p>
+          An inline element
+          <a href="#"
+            >that wraps<br />
+            to two lines</a
+          >
+          should render the hint at the beginning of the first line.
+        </p>
 
-    <p>An inline element <a href="#">that wraps<br> to two lines</a> should render the hint at the beginning of the first line.</p>
+        <p>
+          An inline element with
+          <a href="#">
+            <span
+              style="display:inline-block;width:0;white-space:nowrap;overflow:hidden;"
+            >
+              I AM FIRST AND HIDDEN
+            </span>
+            <br />
+            a first child node that has 0 width
+          </a>
+          should render the hint at the beginning of the first visible child
+          node.
+        </p>
+        <p>
+          An inline element with
+          <a href="#">
+            <span style="display:inline-block;width:0;white-space:nowrap;">
+              I AM FIRST AND VISIBLE
+            </span>
+            <br />
+            a first child node that has 0 width
+          </a>
+          should render the hint at the beginning of the first visible child
+          node.
+        </p>
+      </div>
+    </div>
 
-    <p>An inline element with <a href="#"><span style="display:inline-block;width:0;white-space:nowrap;overflow:hidden;">I AM FIRST AND HIDDEN</span><br> a first child node that has 0 width</a> should render the hint at the beginning of the first visible child node.</p>
-    <p>An inline element with <a href="#"><span style="display:inline-block;width:0;white-space:nowrap;">I AM FIRST AND VISIBLE</span><br> a first child node that has 0 width</a> should render the hint at the beginning of the first visible child node.</p>
-  </div>
-</div>
+    <h2>Many links</h2>
 
-<h2>Many links</h2>
+    <p>For testing hint labeling and performance.</p>
 
-<p>For testing hint labeling and performance.</p>
+    <div id="manyManyLinks"></div>
 
-<div id="manyManyLinks"></div>
+    <script>
+      ;(function(d) {
+        // Generate many links
+        ;(function() {
+          var numberOfLinks = 2000
+          var linkHtml = '<a href="#">link</a> &nbsp; &nbsp; &nbsp; &nbsp;'
+          var manyHtml = ''
+          do {
+            manyHtml += linkHtml
+          } while (numberOfLinks--)
+          d.getElementById('manyManyLinks').innerHTML = manyHtml
+        })()
 
-<script>
-  (function(d) {
-    // Generate many links
-    (function() {
-      var numberOfLinks = 2000;
-      var linkHtml = '<a href="#">link</a> &nbsp; &nbsp; &nbsp; &nbsp;';
-      var manyHtml = '';
-      do { manyHtml += linkHtml } while (numberOfLinks--);
-      d.getElementById('manyManyLinks').innerHTML = manyHtml;
-    })();
+        // Event that should be prevented when matching hints
+        ;(function() {
+          var color = 0
+          var colors = ['#faa', '#afa']
+          var visualisingEl = d.getElementById('prevent-event-visualizer')
+          d.addEventListener(
+            'keydown',
+            function() {
+              visualisingEl.style.background = colors[(color = 1 - color)]
+            },
+            true,
+          )
+        })()
 
-    // Event that should be prevented when matching hints
-    (function() {
-      var color = 0;
-      var colors = ['#faa', '#afa'];
-      var visualisingEl = d.getElementById('prevent-event-visualizer');
-      d.addEventListener('keydown', function() {
-        visualisingEl.style.background = colors[color = 1 - color];
-      }, true);
-    })();
-
-    // Event that should be prevented when focusing an element by
-    // triggering the hint with the enter key
-    (function() {
-      var KEYCODE_RETURN = 13;
-      var el = d.getElementById('dont-run-this-when-focused-with-enter-key');
-      el.addEventListener('keyup', function(event) {
-        if (event.keyCode === KEYCODE_RETURN) {
-          el.blur();
-          console.log('FAILED: dont-run-this-when-focused-with-enter-key');
-        }
-      }, true);
-    })();
-  })(document);
-</script>
-
-</body>
+        // Event that should be prevented when focusing an element by
+        // triggering the hint with the enter key
+        ;(function() {
+          var KEYCODE_RETURN = 13
+          var el = d.getElementById('dont-run-this-when-focused-with-enter-key')
+          el.addEventListener(
+            'keyup',
+            function(event) {
+              if (event.keyCode === KEYCODE_RETURN) {
+                el.blur()
+                console.log('FAILED: dont-run-this-when-focused-with-enter-key')
+              }
+            },
+            true,
+          )
+        })()
+      })(document)
+    </script>
+  </body>
 </html>

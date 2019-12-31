@@ -1,8 +1,3 @@
-/* eslint-env commonjs, browser */
-/* globals chrome */
-
-'use strict'
-
 // Initialize
 
 const state = {}
@@ -10,87 +5,94 @@ const state = {}
 // Chrome content script don't support static ES imports.
 // https://stackoverflow.com/a/53033388/1072649
 ;(async () => {
-	const url = chrome.runtime.getURL('bootstrap-state.js')
-	const bootstrapState = await import(url)
+  const url = chrome.runtime.getURL('bootstrap-state.js')
+  const bootstrapState = await import(url)
 
-	bootstrapState.default(state, setup)
+  bootstrapState.default(state, setup)
 })()
 
 // Stuff
 
 function setup() {
-	const activationShortcutInputElement = document.getElementById('activationShortcutInput')
-	const newTabActivationShortcutInputElement = document.getElementById('newTabActivationShortcutInput')
-	const autoTriggerCheckboxElement = document.getElementById('autoTrigger')
+  const activationShortcutInput = document.getElementById(
+    'activationShortcutInput',
+  )
+  const newTabActivationShortcutInput = document.getElementById(
+    'newTabActivationShortcutInput',
+  )
+  const autoTriggerCheckbox = document.getElementById('autoTrigger')
 
-	activationShortcutInputElement.placeholder = getShortcutText(state.options.activationShortcut)
-	newTabActivationShortcutInputElement.placeholder = getShortcutText(state.options.newTabActivationShortcut)
-	autoTriggerCheckboxElement.checked = state.options.autoTrigger
+  activationShortcutInput.placeholder = getShortcutText(
+    state.options.activationShortcut,
+  )
+  newTabActivationShortcutInput.placeholder = getShortcutText(
+    state.options.newTabActivationShortcut,
+  )
+  autoTriggerCheckbox.checked = state.options.autoTrigger
 
-	bindShortcutInput('activationShortcut', activationShortcutInputElement)
-	bindShortcutInput('newTabActivationShortcut', newTabActivationShortcutInputElement)
-	autoTriggerCheckboxElement.addEventListener('change', setAutoTrigger)
+  bindShortcutInput('activationShortcut', activationShortcutInput)
+  bindShortcutInput('newTabActivationShortcut', newTabActivationShortcutInput)
+  autoTriggerCheckbox.addEventListener('change', setAutoTrigger)
 }
 
 function bindShortcutInput(optionsKey, inputElement) {
-	inputElement.addEventListener('keydown', function setShortcut(event) {
-		// Ignore Tab for accessibility reasons.
-		if (event.key === 'Tab') {
-			return
-		}
+  inputElement.addEventListener('keydown', function setShortcut(event) {
+    // Ignore Tab for accessibility reasons.
+    if (event.key === 'Tab') {
+      return
+    }
 
-		event.preventDefault()
+    event.preventDefault()
 
-		const shortcut = {
-			key: event.key,
-			shiftKey: event.shiftKey,
-			ctrlKey: event.ctrlKey,
-			altKey: event.altKey,
-			metaKey: event.metaKey
-		}
+    const shortcut = {
+      key: event.key,
+      shiftKey: event.shiftKey,
+      ctrlKey: event.ctrlKey,
+      altKey: event.altKey,
+      metaKey: event.metaKey,
+    }
 
-		inputElement.placeholder = getShortcutText(shortcut)
+    inputElement.placeholder = getShortcutText(shortcut)
 
-		saveOptions({[optionsKey]: shortcut})
-	})
+    saveOptions({[optionsKey]: shortcut})
+  })
 }
 
 function getShortcutText(shortcut) {
-	let {
-		key,
-		metaKey,
-		ctrlKey,
-		altKey,
-		shiftKey
-	} = shortcut
-	const parts = []
+  let {key, metaKey, ctrlKey, altKey, shiftKey} = shortcut
+  const parts = []
 
-	if (metaKey) {
-		switch (state.os) {
-			case 'mac': parts.push('Command'); break
-			case 'win': parts.push('Win'); break
-			default: parts.push('Meta')
-		}
-	}
+  if (metaKey) {
+    switch (state.os) {
+      case 'mac':
+        parts.push('Command')
+        break
+      case 'win':
+        parts.push('Win')
+        break
+      default:
+        parts.push('Meta')
+    }
+  }
 
-	ctrlKey && parts.push('Ctrl')
-	altKey && parts.push('Alt')
-	shiftKey && parts.push('Shift')
+  ctrlKey && parts.push('Ctrl')
+  altKey && parts.push('Alt')
+  shiftKey && parts.push('Shift')
 
-	if (!['Control', 'Alt', 'Shift', 'Meta'].includes(key)) {
-		// Normalize all 1 character keys to uppercase because:
-		// * The case varies depending on if the Shift key was used
-		// * 1 character keys are usually displayed in uppercase on keyboards
-		parts.push(key.length > 1 ? key : key.toLocaleUpperCase())
-	}
+  if (!['Control', 'Alt', 'Shift', 'Meta'].includes(key)) {
+    // Normalize all 1 character keys to uppercase because:
+    // * The case varies depending on if the Shift key was used
+    // * 1 character keys are usually displayed in uppercase on keyboards
+    parts.push(key.length > 1 ? key : key.toLocaleUpperCase())
+  }
 
-	return parts.join(' + ')
+  return parts.join(' + ')
 }
 
 function setAutoTrigger(event) {
-	saveOptions({autoTrigger: event.target.checked})
+  saveOptions({autoTrigger: event.target.checked})
 }
 
 function saveOptions(options) {
-	chrome.storage.sync.set(options)
+  chrome.storage.sync.set(options)
 }

@@ -1,47 +1,47 @@
 :root {
-	--color-text: #fff;
-	--color-bg: #ee5757;
-	--color-border: #bb2424;
+  --color-text: #fff;
+  --color-bg: #ee5757;
+  --color-border: #bb2424;
 
-	--shadow-highlight: inset rgba(255, 255, 255, 0.35) 0 1px 0;
-	--shadow-drop: rgba(0, 0, 0, 0.28) 0 1px 2px;
+  --shadow-highlight: inset rgba(255, 255, 255, 0.35) 0 1px 0;
+  --shadow-drop: rgba(0, 0, 0, 0.28) 0 1px 2px;
 
-	--zindex: 99999999999999999999;
+  --zindex: 99999999999999999999;
 }
 
 .KEYJUMP {
-	transition: opacity 0.2s;
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: var(--zindex);
-	opacity: 0;
-	pointer-events: none;
+  transition: opacity 0.2s;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--zindex);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .KEYJUMP_active {
-	opacity: 1;
+  opacity: 1;
 }
 
 .KEYJUMP_hint {
-	transition: opacity 0.2s;
-	position: absolute;
-	padding: 2px 3px;
-	color: var(--color-text);
-	background: var(--color-bg);
-	border: 1px solid var(--color-border);
-	border-radius: 2px;
-	box-shadow: var(--shadow-highlight), var(--shadow-drop);
-	font: 13px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
-	letter-spacing: 1px;
-	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-	white-space: nowrap;
+  transition: opacity 0.2s;
+  position: absolute;
+  padding: 2px 3px;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: var(--shadow-highlight), var(--shadow-drop);
+  font: 13px/1 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
 }
 
 .KEYJUMP_filtered .KEYJUMP_hint {
-	opacity: 0;
+  opacity: 0;
 }
 
 .KEYJUMP_filtered .KEYJUMP_match {
-	opacity: 1;
+  opacity: 1;
 }

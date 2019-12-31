@@ -1,38 +1,38 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Key Jump options</title>
-	<link rel="stylesheet" href="options.css" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Key Jump options</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="section">
+      <h2>Keyboard shortcuts</h2>
 
-<div class="section">
-	<h2>Keyboard shortcuts</h2>
+      <div class="option option-shortcut">
+        <label for="activationShortcutInput">Show hints</label>
+        <input id="activationShortcutInput" />
+      </div>
 
-	<div class="option option-shortcut">
-		<label for="activationShortcutInput">Show hints</label>
-		<input id="activationShortcutInput" />
-	</div>
+      <div class="option option-shortcut">
+        <label for="newTabActivationShortcutInput">
+          Show hints and open links in new tabs
+        </label>
+        <input type="text" id="newTabActivationShortcutInput" />
+      </div>
+    </div>
 
-	<div class="option option-shortcut">
-		<label for="newTabActivationShortcutInput">Show hints and open links in new tabs</label>
-		<input type="text" id="newTabActivationShortcutInput" />
-	</div>
-</div>
+    <div class="section">
+      <h2>Behaviour</h2>
 
-<div class="section">
-	<h2>Behaviour</h2>
+      <div class="option">
+        <label>
+          <input type="checkbox" id="autoTrigger" />
+          Automatically trigger matching hints
+        </label>
+      </div>
+    </div>
 
-	<div class="option">
-		<label>
-			<input type="checkbox" id="autoTrigger" />
-			Automatically trigger matching hints
-		</label>
-	</div>
-</div>
-
-<script src="options.js"></script>
-
-</body>
+    <script src="options.js"></script>
+  </body>
 </html>

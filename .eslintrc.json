@@ -1,0 +1,23 @@
+{
+  "extends": ["eslint:recommended", "prettier"],
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2019
+  },
+  "env": {
+    "node": true
+  },
+  "overrides": [
+    {
+      "files": ["src/**/*"],
+      "env": {
+        "node": false,
+        "browser": true
+      },
+      "globals": {
+        "chrome": "readonly"
+      }
+    }
+  ]
+}

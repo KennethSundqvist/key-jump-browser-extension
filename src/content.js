@@ -495,13 +495,13 @@ function isElementVisible(el) {
       styles.display === 'none' ||
       styles.visibility === 'hidden' ||
       styles.opacity === '0' ||
-			(
-				(
-					(rect.width <= 0 && hidingOverflows.includes(styles['overflow-x'])) ||
-					(rect.height <= 0 && hidingOverflows.includes(styles['overflow-y']))
-				) &&
-				!allowedCollapsedTags.includes(el.tagName.toLowerCase())
-			)
+      (
+        (
+          (rect.width <= 0 && hidingOverflows.includes(styles['overflow-x'])) ||
+          (rect.height <= 0 && hidingOverflows.includes(styles['overflow-y']))
+        ) &&
+        !allowedCollapsedTags.includes(el.tagName.toLowerCase())
+      )
     ) {
       return false
     }

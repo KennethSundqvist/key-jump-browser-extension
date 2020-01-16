@@ -9,7 +9,8 @@
     "lint": "prettier --check \"**/*.{md,json,js,css,html}\" && eslint .",
     "lint:fix": "prettier --write \"**/*.{md,json,js,css,html}\" && eslint --fix .",
     "test": "npm run lint",
-    "dist": "time ./npm-scripts/dist.sh"
+    "dist": "time ./npm-scripts/dist.sh",
+    "start": "node npm-scripts/start.js"
   },
   "devDependencies": {
     "babel-eslint": "10.0.3",

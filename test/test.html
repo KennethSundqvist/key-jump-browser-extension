@@ -34,7 +34,7 @@
         </p>
         <p>
           <a href="#">
-            <span style="display:inline-block;width:0;overflow:hidden;">
+            <span style="display: inline-block; width: 0; overflow: hidden">
               .
             </span>
             <code>a</code> element
@@ -61,20 +61,20 @@
         </p>
         <p>
           Inside parent with width:0 and visible overflow:
-          <span style="display:inline-block;width: 0;">
+          <span style="display: inline-block; width: 0">
             <a href="#">Hello!</a>
           </span>
         </p>
         <p>
           Inside parent with height:0 and visible overflow:
-          <span style="display:inline-block;height: 0;">
+          <span style="display: inline-block; height: 0">
             <a href="#">Hello!</a>
           </span>
         </p>
         <p>
           With no visible children:
           <a href="#">
-            <span style="display:inline-block;width:0;overflow: hidden">
+            <span style="display: inline-block; width: 0; overflow: hidden">
               Hello!
             </span>
           </a>
@@ -113,43 +113,43 @@
         </p>
         <p>
           Inside parent with width:0 and overflow:hidden:
-          <span style="display:inline-block;width:0;overflow:hidden;">
+          <span style="display: inline-block; width: 0; overflow: hidden">
             <a href="#">Hello!</a>
           </span>
         </p>
         <p>
           Inside parent with width:0 and overflow:auto:
-          <span style="display:inline-block;width:0;overflow:auto;">
+          <span style="display: inline-block; width: 0; overflow: auto">
             <a href="#">Hello!</a>
           </span>
         </p>
         <p>
           Inside parent with width:0 and overflow:scroll:
-          <span style="display:inline-block;width:0;overflow:scroll;">
+          <span style="display: inline-block; width: 0; overflow: scroll">
             <a href="#">Hello!</a>
           </span>
         </p>
         <p>
           Inside parent with height:0 and overflow:hidden:
-          <span style="display:inline-block;height:0;overflow:hidden;">
+          <span style="display: inline-block; height: 0; overflow: hidden">
             <a href="#">Hello!</a>
           </span>
         </p>
         <p>
           Inside parent with height:0 and overflow:auto:
-          <span style="display:inline-block;height:0;overflow:auto;">
+          <span style="display: inline-block; height: 0; overflow: auto">
             <a href="#">Hello!</a>
           </span>
         </p>
         <p>
           Inside parent with height:0 and overflow:scroll:
-          <span style="display:inline-block;height:0;overflow:scroll;">
+          <span style="display: inline-block; height: 0; overflow: scroll">
             <a href="#">Hello!</a>
           </span>
         </p>
         <p>
           Inside parent with opacity 0:
-          <span style="opacity: 0;"><a href="#">Hello!</a></span>
+          <span style="opacity: 0"><a href="#">Hello!</a></span>
         </p>
       </div>
     </div>
@@ -227,7 +227,12 @@
           An inline element with
           <a href="#">
             <span
-              style="display:inline-block;width:0;white-space:nowrap;overflow:hidden;"
+              style="
+                display: inline-block;
+                width: 0;
+                white-space: nowrap;
+                overflow: hidden;
+              "
             >
               I AM FIRST AND HIDDEN
             </span>
@@ -240,7 +245,7 @@
         <p>
           An inline element with
           <a href="#">
-            <span style="display:inline-block;width:0;white-space:nowrap;">
+            <span style="display: inline-block; width: 0; white-space: nowrap">
               I AM FIRST AND VISIBLE
             </span>
             <br />
@@ -259,9 +264,9 @@
     <div id="manyManyLinks"></div>
 
     <script>
-      ;(function(d) {
+      ;(function (d) {
         // Generate many links
-        ;(function() {
+        ;(function () {
           var numberOfLinks = 2000
           var linkHtml = '<a href="#">link</a> &nbsp; &nbsp; &nbsp; &nbsp;'
           var manyHtml = ''
@@ -272,13 +277,13 @@
         })()
 
         // Event that should be prevented when matching hints
-        ;(function() {
+        ;(function () {
           var color = 0
           var colors = ['#faa', '#afa']
           var visualisingEl = d.getElementById('prevent-event-visualizer')
           d.addEventListener(
             'keydown',
-            function() {
+            function () {
               visualisingEl.style.background = colors[(color = 1 - color)]
             },
             true,
@@ -287,12 +292,12 @@
 
         // Event that should be prevented when focusing an element by
         // triggering the hint with the enter key
-        ;(function() {
+        ;(function () {
           var KEYCODE_RETURN = 13
           var el = d.getElementById('dont-run-this-when-focused-with-enter-key')
           el.addEventListener(
             'keyup',
-            function(event) {
+            function (event) {
               if (event.keyCode === KEYCODE_RETURN) {
                 el.blur()
                 console.log('FAILED: dont-run-this-when-focused-with-enter-key')

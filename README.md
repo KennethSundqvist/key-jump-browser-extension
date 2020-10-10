@@ -1,8 +1,8 @@
-# Key Jump Chrome Extension
+# Key Jump browser extension
 
 Pointing and clicking with your mouse can be annoying, especially if you're someone who uses only the keyboard for extended periods of time.
 
-This Chrome extension makes it easier for you to click on links and stuff without taking your hands off your keyboard.
+This browser extension makes it easier for you to click on links and stuff without taking your hands off your keyboard.
 
 ## Install
 

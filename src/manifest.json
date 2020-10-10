@@ -4,7 +4,7 @@
   "description": "Hit-a-Hint style keyboard navigation. No mouse needed to click on links and stuff.",
   "version": "5.1.0",
   "author": "Kenneth Sundqvist <kenneth@kesu.se>",
-  "homepage_url": "https://github.com/KennethSundqvist/key-jump-chrome-extension",
+  "homepage_url": "https://github.com/KennethSundqvist/key-jump-browser-extension",
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",

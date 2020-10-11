@@ -1,4 +1,7 @@
-export default function bootstrapState(state = {}, callback) {
+// Workaround until dynamic imports are supported in browser extensions in all
+// browsers.
+const KJ = (window.__KEYJUMP__ = window.__KEYJUMP__ || {})
+KJ.bootstrapState = function bootstrapState(state = {}, callback) {
   let gotInfo = false
   let gotOptions = false
 
@@ -51,7 +54,7 @@ function processOptions(options) {
     autoTrigger: true,
   }
 
-  if (options.optionsVersion !== defaultOptions.optionsVersion) {
+  if (!options || options.optionsVersion !== defaultOptions.optionsVersion) {
     options = defaultOptions
 
     chrome.storage.sync.set(options)

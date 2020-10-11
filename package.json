@@ -6,16 +6,18 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "lint": "prettier --check \"**/*.{md,json,js,css,html}\" && eslint .",
-    "lint:fix": "prettier --write \"**/*.{md,json,js,css,html}\" && eslint --fix .",
+    "lint": "prettier --check \"**/*.{md,json,js,css,html}\" && eslint . && web-ext lint",
+    "lint:fix": "prettier --write \"**/*.{md,json,js,css,html}\" && eslint --fix . && web-ext lint",
     "test": "npm run lint",
-    "dist": "time ./npm-scripts/dist.sh",
-    "start": "node npm-scripts/start.js"
+    "build": "web-ext build",
+    "start": "web-ext run",
+    "serve-tests": "node npm-scripts/start.js"
   },
   "devDependencies": {
     "babel-eslint": "10.1.0",
     "eslint": "7.11.0",
     "eslint-config-prettier": "6.12.0",
-    "prettier": "2.1.2"
+    "prettier": "2.1.2",
+    "web-ext": "5.2.0"
   }
 }

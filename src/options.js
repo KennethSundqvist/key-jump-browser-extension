@@ -2,14 +2,7 @@
 
 const state = {}
 
-// Chrome content script don't support static ES imports.
-// https://stackoverflow.com/a/53033388/1072649
-;(async () => {
-  const url = chrome.runtime.getURL('bootstrap-state.js')
-  const bootstrapState = await import(url)
-
-  bootstrapState.default(state, setup)
-})()
+window.__KEYJUMP__.bootstrapState(state, setup)
 
 // Stuff
 
@@ -94,5 +87,6 @@ function setAutoTrigger(event) {
 }
 
 function saveOptions(options) {
+  document.body.append(JSON.stringify(options, null, 2))
   chrome.storage.sync.set(options)
 }

@@ -1,12 +1,11 @@
 # Key Jump browser extension
 
-Pointing and clicking with your mouse can be annoying, especially if you're someone who uses only the keyboard for extended periods of time.
+No mouse needed to click on links and stuff.
 
-This browser extension makes it easier for you to click on links and stuff without taking your hands off your keyboard.
+## Get the extension
 
-## Install
-
-[Install it from the Chrome Web Store](https://chrome.google.com/webstore/detail/key-jump/afdjhbmagopjlalgcjfclkgobaafamck)
+- **[Chrome](https://chrome.google.com/webstore/detail/key-jump-keyboard-navigat/afdjhbmagopjlalgcjfclkgobaafamck)**
+- **[Firefox](https://addons.mozilla.org/en-US/firefox/addon/key-jump-keyboard-navigation/)**
 
 ## How to use
 
@@ -21,3 +20,13 @@ The hint will be automatically triggered when the number you've typed can't matc
 Press `Escape` to hide the hints.
 
 Some of these shortcuts can be changed in the extension options.
+
+![](media/screenshots/2.png)
+
+## Permissions required
+
+- **Access your data for all websites:** Allows you to use the extension on all websites.
+
+## Privacy
+
+No data is collected by this extension. You can [view the source code here](https://github.com/KennethSundqvist/key-jump-browser-extension/tree/master/src).

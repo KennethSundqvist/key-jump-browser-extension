@@ -6,6 +6,7 @@ No mouse needed to click on links and stuff.
 
 - **[Chrome](https://chrome.google.com/webstore/detail/key-jump-keyboard-navigat/afdjhbmagopjlalgcjfclkgobaafamck)**
 - **[Firefox](https://addons.mozilla.org/en-US/firefox/addon/key-jump-keyboard-navigation/)**
+- **[Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/key-jump-keyboard-navigation/faeejgeaoefhcdlkpkgnlchbbncbmpid)**
 
 ## How to use
 

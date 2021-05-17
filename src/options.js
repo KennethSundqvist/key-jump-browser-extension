@@ -94,5 +94,5 @@ function setActivateNewTab(event) {
 }
 
 function saveOptions(options) {
-  chrome.storage.sync.set(options)
+  browser.storage.sync.set(options)
 }

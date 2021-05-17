@@ -6,7 +6,7 @@ const state = {
   // be before the `document.body` element is available, so we use
   // `document.documentElement` instead as the root element.
   //
-  // https://developer.chrome.com/extensions/content_scripts#run_at
+  // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_scripts#run_at
   rootEl: document.documentElement,
   active: false,
   openInNewTab: null,

@@ -6,8 +6,8 @@ KJ.bootstrapState = function bootstrapState(state = {}, callback) {
   let gotOptions = false
 
   // Not available in content script.
-  if (chrome.runtime.getPlatformInfo) {
-    chrome.runtime.getPlatformInfo(getInfoCallback)
+  if (browser.runtime.getPlatformInfo) {
+    browser.runtime.getPlatformInfo(getInfoCallback)
   } else {
     getInfoCallback({
       // Only need to know if Mac in the content script.
@@ -21,7 +21,7 @@ KJ.bootstrapState = function bootstrapState(state = {}, callback) {
     runCallbackIfDone()
   }
 
-  chrome.storage.sync.get(null, (options) => {
+  browser.storage.sync.get(null, (options) => {
     state.options = processOptions(options)
     gotOptions = true
     runCallbackIfDone()
@@ -75,7 +75,7 @@ function processOptions(options) {
   // defaults in the future we don't necessarily have to change them for
   // existing users who might have become used to the old default behaviour.
   if (saveOptions) {
-    chrome.storage.sync.set(options)
+    browser.storage.sync.set(options)
   }
 
   return options

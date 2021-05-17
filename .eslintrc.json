@@ -13,7 +13,8 @@
       "files": ["src/**/*"],
       "env": {
         "node": false,
-        "browser": true
+        "browser": true,
+        "webextensions": true
       },
       "globals": {
         "chrome": "readonly"

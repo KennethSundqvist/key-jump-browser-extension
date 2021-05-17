@@ -15,6 +15,9 @@
     "page": "options.html",
     "chrome_style": true
   },
+  "background": {
+    "scripts": ["background.js"]
+  },
   "content_scripts": [
     {
       "matches": ["*://*/*", "ftp://*/*"],

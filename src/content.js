@@ -231,17 +231,23 @@ function triggerMatchingHint() {
   if (shouldElementBeFocused(targetEl)) {
     targetEl.focus()
   } else {
-    const isMac = state.os === 'mac'
+    if (
+      openInNewTab &&
+      // Is a link.
+      targetEl.tagName.toLowerCase() === 'a' &&
+      // Has a href value.
+      targetEl.getAttribute('href')
+    ) {
+      browser.runtime.sendMessage({openUrlInNewTab: targetEl.href})
+    } else {
+      const mouseEvent = new MouseEvent('click', {
+        view: window,
+        bubbles: true,
+        cancelable: true,
+      })
 
-    const mouseEvent = new MouseEvent('click', {
-      view: window,
-      bubbles: true,
-      cancelable: true,
-      ctrlKey: openInNewTab && !isMac,
-      metaKey: openInNewTab && isMac,
-    })
-
-    targetEl.dispatchEvent(mouseEvent)
+      targetEl.dispatchEvent(mouseEvent)
+    }
   }
 
   // Deactivation is done after the triggering is complete since it resets the

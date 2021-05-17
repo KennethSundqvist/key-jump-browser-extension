@@ -279,15 +279,16 @@ function activateHintMode() {
   window.addEventListener('resize', refreshHintsHandler)
   window.addEventListener('popstate', refreshHintsHandler)
 
-  state.removeRefreshHintsEventListeners = function removeRefreshHintsEventListeners() {
-    document.removeEventListener('scroll', refreshHintsHandler)
-    window.removeEventListener('resize', refreshHintsHandler)
-    window.removeEventListener('popstate', refreshHintsHandler)
+  state.removeRefreshHintsEventListeners =
+    function removeRefreshHintsEventListeners() {
+      document.removeEventListener('scroll', refreshHintsHandler)
+      window.removeEventListener('resize', refreshHintsHandler)
+      window.removeEventListener('popstate', refreshHintsHandler)
 
-    // Removes itself so it can't be called multiple times, and to clean up
-    // memory usage.
-    state.removeRefreshHintsEventListeners = null
-  }
+      // Removes itself so it can't be called multiple times, and to clean up
+      // memory usage.
+      state.removeRefreshHintsEventListeners = null
+    }
 }
 
 function deactivateHintMode() {

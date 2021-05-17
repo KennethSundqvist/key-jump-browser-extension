@@ -36,7 +36,7 @@ KJ.bootstrapState = function bootstrapState(state = {}, callback) {
 
 function processOptions(options) {
   const defaultOptions = {
-    optionsVersion: 1,
+    optionsVersion: 2,
     activationShortcut: {
       key: ',',
       shiftKey: false,
@@ -52,11 +52,29 @@ function processOptions(options) {
       metaKey: false,
     },
     autoTrigger: true,
+    activateNewTab: true,
   }
 
-  if (!options || options.optionsVersion !== defaultOptions.optionsVersion) {
-    options = defaultOptions
+  let saveOptions = false
 
+  if (!options) {
+    saveOptions = true
+    options = defaultOptions
+  }
+  if (options.optionsVersion === 1) {
+    saveOptions = true
+    options.optionsVersion = 2
+    options.activateNewTab = true
+  }
+  if (options.optionsVersion !== defaultOptions.optionsVersion) {
+    saveOptions = true
+    options = defaultOptions
+  }
+
+  // Save options even if they have not been changed so if we change the
+  // defaults in the future we don't necessarily have to change them for
+  // existing users who might have become used to the old default behaviour.
+  if (saveOptions) {
     chrome.storage.sync.set(options)
   }
 

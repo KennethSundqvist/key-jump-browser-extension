@@ -14,6 +14,7 @@ function setup() {
     'newTabActivationShortcutInput',
   )
   const autoTriggerCheckbox = document.getElementById('autoTrigger')
+  const activateNewTabCheckbox = document.getElementById('activateNewTab')
 
   activationShortcutInput.placeholder = getShortcutText(
     state.options.activationShortcut,
@@ -22,10 +23,12 @@ function setup() {
     state.options.newTabActivationShortcut,
   )
   autoTriggerCheckbox.checked = state.options.autoTrigger
+  activateNewTabCheckbox.checked = state.options.activateNewTab
 
   bindShortcutInput('activationShortcut', activationShortcutInput)
   bindShortcutInput('newTabActivationShortcut', newTabActivationShortcutInput)
   autoTriggerCheckbox.addEventListener('change', setAutoTrigger)
+  activateNewTabCheckbox.addEventListener('change', setActivateNewTab)
 }
 
 function bindShortcutInput(optionsKey, inputElement) {
@@ -84,6 +87,10 @@ function getShortcutText(shortcut) {
 
 function setAutoTrigger(event) {
   saveOptions({autoTrigger: event.target.checked})
+}
+
+function setActivateNewTab(event) {
+  saveOptions({activateNewTab: event.target.checked})
 }
 
 function saveOptions(options) {

@@ -87,6 +87,5 @@ function setAutoTrigger(event) {
 }
 
 function saveOptions(options) {
-  document.body.append(JSON.stringify(options, null, 2))
   chrome.storage.sync.set(options)
 }

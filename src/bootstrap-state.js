@@ -1,3 +1,7 @@
+// `browser` is the standardised interface for Web Extensions, but Chrome
+// doesn't support that yet.
+const _browser = typeof browser !== 'undefined' ? browser : chrome
+
 // Workaround until dynamic imports are supported in browser extensions in all
 // browsers.
 const KJ = (window.__KEYJUMP__ = window.__KEYJUMP__ || {})
@@ -6,8 +10,8 @@ KJ.bootstrapState = function bootstrapState(state = {}, callback) {
   let gotOptions = false
 
   // Not available in content script.
-  if (browser.runtime.getPlatformInfo) {
-    browser.runtime.getPlatformInfo(getInfoCallback)
+  if (_browser.runtime.getPlatformInfo) {
+    _browser.runtime.getPlatformInfo(getInfoCallback)
   } else {
     getInfoCallback({
       // Only need to know if Mac in the content script.
@@ -21,7 +25,7 @@ KJ.bootstrapState = function bootstrapState(state = {}, callback) {
     runCallbackIfDone()
   }
 
-  browser.storage.sync.get(null, (options) => {
+  _browser.storage.sync.get(null, (options) => {
     state.options = processOptions(options)
     gotOptions = true
     runCallbackIfDone()
@@ -75,7 +79,7 @@ function processOptions(options) {
   // defaults in the future we don't necessarily have to change them for
   // existing users who might have become used to the old default behaviour.
   if (saveOptions) {
-    browser.storage.sync.set(options)
+    _browser.storage.sync.set(options)
   }
 
   return options

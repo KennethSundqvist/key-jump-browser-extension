@@ -1,3 +1,6 @@
+/* globals _browser */
+// _browser is defined in bootstrap-state.js
+
 // Initialize
 
 const state = {
@@ -238,7 +241,8 @@ function triggerMatchingHint() {
       // Has a href value.
       targetEl.getAttribute('href')
     ) {
-      browser.runtime.sendMessage({openUrlInNewTab: targetEl.href})
+      console.log(`@@@ send message`)
+      _browser.runtime.sendMessage({openUrlInNewTab: targetEl.href})
     } else {
       const mouseEvent = new MouseEvent('click', {
         view: window,

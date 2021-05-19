@@ -1,3 +1,6 @@
+/* globals _browser */
+// _browser is defined in bootstrap-state.js
+
 // Initialize
 
 const state = {}
@@ -94,5 +97,5 @@ function setActivateNewTab(event) {
 }
 
 function saveOptions(options) {
-  browser.storage.sync.set(options)
+  _browser.storage.sync.set(options)
 }

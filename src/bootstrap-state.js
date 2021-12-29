@@ -57,7 +57,7 @@ function processOptions(options) {
     },
     autoTrigger: true,
     activateNewTab: true,
-    ignoreWhileInputFocussed: true,
+    ignoreWhileInputFocused: true,
   }
 
   let saveOptions = false
@@ -74,7 +74,7 @@ function processOptions(options) {
   if (options.optionsVersion === 2) {
     saveOptions = true
     options.optionsVersion = 3
-    options.ignoreWhileInputFocussed = true
+    options.ignoreWhileInputFocused = true
   }
   if (options.optionsVersion !== defaultOptions.optionsVersion) {
     saveOptions = true

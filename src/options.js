@@ -18,8 +18,8 @@ function setup() {
   )
   const autoTriggerCheckbox = document.getElementById('autoTrigger')
   const activateNewTabCheckbox = document.getElementById('activateNewTab')
-  const ignoreWhileInputFocussedCheckbox = document.getElementById(
-    'ignoreWhileInputFocussed',
+  const ignoreWhileInputFocusedCheckbox = document.getElementById(
+    'ignoreWhileInputFocused',
   )
 
   activationShortcutInput.placeholder = getShortcutText(
@@ -30,16 +30,16 @@ function setup() {
   )
   autoTriggerCheckbox.checked = state.options.autoTrigger
   activateNewTabCheckbox.checked = state.options.activateNewTab
-  ignoreWhileInputFocussedCheckbox.checked =
-    state.options.ignoreWhileInputFocussed
+  ignoreWhileInputFocusedCheckbox.checked =
+    state.options.ignoreWhileInputFocused
 
   bindShortcutInput('activationShortcut', activationShortcutInput)
   bindShortcutInput('newTabActivationShortcut', newTabActivationShortcutInput)
   autoTriggerCheckbox.addEventListener('change', setAutoTrigger)
   activateNewTabCheckbox.addEventListener('change', setActivateNewTab)
-  ignoreWhileInputFocussedCheckbox.addEventListener(
+  ignoreWhileInputFocusedCheckbox.addEventListener(
     'change',
-    setIgnoreWhileInputFocussed,
+    setIgnoreWhileInputFocused,
   )
 }
 
@@ -105,8 +105,8 @@ function setActivateNewTab(event) {
   saveOptions({activateNewTab: event.target.checked})
 }
 
-function setIgnoreWhileInputFocussed(event) {
-  saveOptions({ignoreWhileInputFocussed: event.target.checked})
+function setIgnoreWhileInputFocused(event) {
+  saveOptions({ignoreWhileInputFocused: event.target.checked})
 }
 
 function saveOptions(options) {

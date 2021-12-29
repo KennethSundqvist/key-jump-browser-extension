@@ -49,8 +49,7 @@ function keyboardEventCallback(event) {
   if (
     !event.repeat &&
     !(
-      state.options.ignoreWhileInputFocussed &&
-      canElementBeTypedIn(event.target)
+      state.options.ignoreWhileInputFocused && canElementBeTypedIn(event.target)
     )
   ) {
     if (event.type === 'keydown') {

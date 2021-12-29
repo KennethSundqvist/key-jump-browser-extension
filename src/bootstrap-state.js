@@ -40,7 +40,7 @@ KJ.bootstrapState = function bootstrapState(state = {}, callback) {
 
 function processOptions(options) {
   const defaultOptions = {
-    optionsVersion: 2,
+    optionsVersion: 3,
     activationShortcut: {
       key: ',',
       shiftKey: false,
@@ -57,6 +57,7 @@ function processOptions(options) {
     },
     autoTrigger: true,
     activateNewTab: true,
+    ignoreWhileInputFocussed: true,
   }
 
   let saveOptions = false
@@ -69,6 +70,11 @@ function processOptions(options) {
     saveOptions = true
     options.optionsVersion = 2
     options.activateNewTab = true
+  }
+  if (options.optionsVersion === 2) {
+    saveOptions = true
+    options.optionsVersion = 3
+    options.ignoreWhileInputFocussed = true
   }
   if (options.optionsVersion !== defaultOptions.optionsVersion) {
     saveOptions = true

@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Key Jump keyboard navigation",
   "description": "Hit-a-Hint style keyboard navigation. No mouse needed to click on links and stuff.",
-  "version": "5.3.1",
+  "version": "5.4.0",
   "author": "Kenneth Sundqvist <kenneth@kesu.se>",
   "homepage_url": "https://github.com/KennethSundqvist/key-jump-browser-extension",
   "icons": {

@@ -106,9 +106,9 @@ function handleKeydown(event) {
     if (event.key === 'Escape') {
       handleEscapeKey(event)
     } else {
-      const allowedQueryCharacters = '1234567890'
+      const allowedQueryCharacters = /[0-9A-Za-zÀ-ÖØ-öø-ÿ]/
 
-      if (allowedQueryCharacters.includes(event.key)) {
+      if (event.key.match(allowedQueryCharacters)) {
         handleQueryKey(event)
       }
     }

@@ -47,7 +47,7 @@ function setup() {
   bindShortcutInput('activationShortcut', activationShortcutInput)
   bindShortcutInput('newTabActivationShortcut', newTabActivationShortcutInput)
 
-  hintAlphabetInput.addEventListener('change', setHintAlphabet)
+  hintAlphabetInput.addEventListener('input', handleHintAlphabetInput)
 
   autoTriggerCheckbox.addEventListener('change', setAutoTrigger)
   activateNewTabCheckbox.addEventListener('change', setActivateNewTab)
@@ -128,8 +128,13 @@ function setUseLettersForHints(event) {
   saveOptions({useLettersForHints: event.target.checked})
 }
 
-function setHintAlphabet(event) {
-  saveOptions({hintAlphabet: event.target.value})
+function handleHintAlphabetInput(event) {
+  // we want only alphanumeric characters
+  const input = event.target.value
+  const filteredInput = input.replace(/[^0-9A-Za-zÀ-ÖØ-öø-ÿ]/g, '')
+
+  event.target.value = filteredInput
+  saveOptions({hintAlphabet: filteredInput})
 }
 
 function saveOptions(options) {

@@ -128,7 +128,7 @@ function setUseLettersForHints(event) {
 
 function handleHintAlphabetInput(event) {
   // we want only alphanumeric characters
-  const input = event.target.value
+  const input = event.target.value.toUpperCase()
   const filteredInput = input.replace(/[^0-9A-Za-zÀ-ÖØ-öø-ÿ]/g, '')
 
   event.target.value = filteredInput

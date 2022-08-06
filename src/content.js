@@ -267,11 +267,34 @@ function triggerMatchingHint() {
 }
 
 function activateHintMode() {
+  state.targetEls = state.rootEl.querySelectorAll(
+    [
+      // Don't search for 'a' to avoid finding elements used only for fragment
+      // links (jump to a point in a page) which sometimes mess up the hint
+      // numbering or it looks like they can be clicked when they can't.
+      'a[href]',
+      'input:not([disabled]):not([type=hidden])',
+      'textarea:not([disabled])',
+      'select:not([disabled])',
+      'button:not([disabled])',
+      '[contenteditable]:not([contenteditable=false]):not([disabled])',
+      '[ng-click]:not([disabled])',
+      // GWT Anchor widget class
+      // http://www.gwtproject.org/javadoc/latest/com/google/gwt/user/client/ui/Anchor.html
+      '.gwt-Anchor',
+    ].join(','),
+  )
+
   if (state.options.useLettersForHints) {
     // when using alphanumeric hints, we use a seeded random number generator
     // to generate random looking hints that don't change when scrolling
     // (only when toggling hint mode)
     state.initialRngSeed = Math.floor(+Date.now() / 100000)
+    state.rngSeed = state.initialRngSeed
+
+    // shuffle target elements to avoid similarities in adjacent hints when
+    // using alphanumeric ids (see algorithm description in findHints())
+    state.targetEls = shuffle([...state.targetEls])
   }
 
   findHints()
@@ -366,31 +389,12 @@ function clearFilterFromHints() {
 }
 
 function findHints() {
-  let targetEls = state.rootEl.querySelectorAll(
-    [
-      // Don't search for 'a' to avoid finding elements used only for fragment
-      // links (jump to a point in a page) which sometimes mess up the hint
-      // numbering or it looks like they can be clicked when they can't.
-      'a[href]',
-      'input:not([disabled]):not([type=hidden])',
-      'textarea:not([disabled])',
-      'select:not([disabled])',
-      'button:not([disabled])',
-      '[contenteditable]:not([contenteditable=false]):not([disabled])',
-      '[ng-click]:not([disabled])',
-      // GWT Anchor widget class
-      // http://www.gwtproject.org/javadoc/latest/com/google/gwt/user/client/ui/Anchor.html
-      '.gwt-Anchor',
-    ].join(','),
-  )
-
   let hintId
   let lookupTable
 
   if (state.options.useLettersForHints) {
     state.rngSeed = state.initialRngSeed
-    console.log(state.rngSeed)
-    targetEls = shuffle([...targetEls])
+
     lookupTable = generateAlphabetLookupTable(state.options.hintAlphabet)
     hintId = lookupTable.get(0).repeat(2)
   } else {
@@ -400,29 +404,31 @@ function findHints() {
 
   state.hints = []
 
-  for (const el of targetEls) {
+  for (const el of state.targetEls) {
+    // generate IDs for all target elements, even non-visible ones (avoids changing hints when scrolling)
+    if (state.options.useLettersForHints) {
+      // The alphanumeric IDs should satisfy the following properties:
+      // 1. They have to be unique.
+      // 2. Letters that occur earlier in the alphabet string should occur more often
+      //    (The user can then order the keys by how easily they are reachable).
+      // 3. Adjacent IDs should not look similar if possible.
+      // 4. IDs should have at least two letters (mostly aesthetic, but saves time on typos)
+      //
+      // To satisfy the first 2 properties, we iterate through all words over the
+      // hint alphabet in (flipped) lexicographic order, but randomly skip words
+      // with probability depending on the position of their letters in the alphabet
+      // string. The third one we approximate by shuffling the array of targets.
+      hintId = getNextId(hintId, lookupTable)
+    } else {
+      hintId++
+    }
+
+    // if the element is visible, push it onto the render stack
     if (isElementVisible(el)) {
       state.hints.push({
         id: String(hintId),
         targetEl: el,
       })
-
-      if (state.options.useLettersForHints) {
-        // The alphanumeric IDs should satisfy the following properties:
-        // 1. They have to be unique.
-        // 2. Letters that occur earlier in the alphabet string should occur more often
-        //    (The user can then order the keys by how easily they are reachable).
-        // 3. Adjacent IDs should not look similar if possible.
-        // 4. IDs should have at least two letters (mostly aesthetic, but saves time on typos)
-        //
-        // To satisfy the first 2 properties, we iterate through all words over the
-        // hint alphabet in (flipped) lexicographic order, but randomly skip words
-        // with probability depending on the position of their letters in the alphabet
-        // string. The third one we approximate by shuffling the array of targets.
-        hintId = getNextId(hintId, lookupTable)
-      } else {
-        hintId++
-      }
     }
   }
 }
@@ -492,8 +498,8 @@ function shuffle(input) {
 function random() {
   // small seeded random number generator, not exactly uniform but good enough for
   // our purposes.
-  const x = Math.sin(state.rngSeed++) * 10000;
-  return x - Math.floor(x);
+  const x = Math.sin(state.rngSeed++) * 10000
+  return x - Math.floor(x)
 }
 
 function generateAlphabetLookupTable(alphabet) {

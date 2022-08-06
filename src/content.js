@@ -419,19 +419,20 @@ function findHints() {
 
 function getNextId(id, lookupTable) {
   // implements the algorithm described above
-  
+
   const skipBias = 1.5
   const skipProb = 0.2
-  
-  let result = ""
+
+  let result = ''
   let carry = true
 
   // generally "increments" the string by one, where the least significant letter is at position 0
-  for (i = 0; i < id.length; i++) {    
+  for (let i = 0; i < id.length; i++) {
     let chr = id.charAt(i)
     let ord = lookupTable.get(chr)
+    let skip
 
-    // with a small probability we skip the current index completely to bring more 
+    // with a small probability we skip the current index completely to bring more
     // variety to the more significant positions of the ID. Don't make the ID longer
     // than it has to be, though.
     if (Math.random() < skipProb && i < id.length - 1) {
@@ -448,15 +449,16 @@ function getNextId(id, lookupTable) {
       }
 
       chr = lookupTable.get(ord)
-      
+
       // the higher in the alphabet the new letter is, the higher the chance that we skip it
-      skip = Math.floor(Math.random() * lookupTable.get("length") * skipBias) < ord
+      skip =
+        Math.floor(Math.random() * lookupTable.get('length') * skipBias) < ord
     } while (skip)
 
     result = result + chr
 
     if (!carry) {
-      return result + id.substr(i+1)
+      return result + id.substr(i + 1)
     }
   }
 
@@ -468,8 +470,8 @@ function getNextId(id, lookupTable) {
 }
 
 function shuffle(input) {
-  for (i = input.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i+1))
+  for (let i = input.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
     const temp = input[i]
     input[i] = input[j]
     input[j] = temp
@@ -481,15 +483,15 @@ function shuffle(input) {
 function generateAlphabetLookupTable(alphabet) {
   // Generates a lookup table that maps symbols to their position in the hint alphabet
   // and vice versa. Speeds up hint rendering.
-  const table = new Map();
+  const table = new Map()
   const noDuplicates = [...new Set(alphabet)]
   noDuplicates.forEach((elem, idx) => {
     table.set(elem, idx)
     table.set(idx, elem)
   })
 
-  table.set("length", noDuplicates.length)
-  
+  table.set('length', noDuplicates.length)
+
   return table
 }
 

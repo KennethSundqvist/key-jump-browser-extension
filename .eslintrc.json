@@ -6,7 +6,8 @@
     "ecmaVersion": 2019
   },
   "env": {
-    "node": true
+    "node": true,
+    "es6": true
   },
   "overrides": [
     {

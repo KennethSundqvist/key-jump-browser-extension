@@ -58,6 +58,8 @@ function processOptions(options) {
     autoTrigger: true,
     activateNewTab: true,
     ignoreWhileInputFocused: true,
+    useLettersForHints: false,
+    hintAlphabet: "JKLASDFUIOPWERTNMZXCV" // close to the home-row
   }
 
   let saveOptions = false

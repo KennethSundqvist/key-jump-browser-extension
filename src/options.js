@@ -16,10 +16,17 @@ function setup() {
   const newTabActivationShortcutInput = document.getElementById(
     'newTabActivationShortcutInput',
   )
+
   const autoTriggerCheckbox = document.getElementById('autoTrigger')
   const activateNewTabCheckbox = document.getElementById('activateNewTab')
   const ignoreWhileInputFocusedCheckbox = document.getElementById(
     'ignoreWhileInputFocused',
+  )
+  const useLettersForHintsCheckbox =
+        document.getElementById('useLettersForHints')
+
+  const hintAlphabetInput = document.getElementById(
+    'hintAlphabetInput'
   )
 
   activationShortcutInput.placeholder = getShortcutText(
@@ -28,15 +35,23 @@ function setup() {
   newTabActivationShortcutInput.placeholder = getShortcutText(
     state.options.newTabActivationShortcut,
   )
+
   autoTriggerCheckbox.checked = state.options.autoTrigger
   activateNewTabCheckbox.checked = state.options.activateNewTab
+  useLettersForHintsCheckbox.checked = state.options.useLettersForHints
   ignoreWhileInputFocusedCheckbox.checked =
     state.options.ignoreWhileInputFocused
 
+  hintAlphabetInput.value = state.options.hintAlphabet
+
   bindShortcutInput('activationShortcut', activationShortcutInput)
   bindShortcutInput('newTabActivationShortcut', newTabActivationShortcutInput)
+
+  hintAlphabetInput.addEventListener('change', setHintAlphabet)
+
   autoTriggerCheckbox.addEventListener('change', setAutoTrigger)
   activateNewTabCheckbox.addEventListener('change', setActivateNewTab)
+  useLettersForHintsCheckbox.addEventListener('change', setUseLettersForHints)
   ignoreWhileInputFocusedCheckbox.addEventListener(
     'change',
     setIgnoreWhileInputFocused,
@@ -107,6 +122,14 @@ function setActivateNewTab(event) {
 
 function setIgnoreWhileInputFocused(event) {
   saveOptions({ignoreWhileInputFocused: event.target.checked})
+}
+
+function setUseLettersForHints(event) {
+  saveOptions({useLettersForHints: event.target.checked})
+}
+
+function setHintAlphabet(event) {
+  saveOptions({hintAlphabet: event.target.value})
 }
 
 function saveOptions(options) {

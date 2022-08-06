@@ -25,11 +25,13 @@
   margin-top: var(--KEYJUMP-option-margin);
 }
 
-.option-shortcut {
+.option-shortcut,
+.option-text {
   align-items: baseline;
 }
 
-.option-shortcut label {
+.option-shortcut label,
+.option-text label {
   flex: 1;
   -webkit-padding-end: var(--KEYJUMP-option-margin);
 }
@@ -60,4 +62,21 @@
 
 .option-shortcut input::placeholder {
   color: rgb(48, 57, 66);
+}
+
+.option-text input {
+  display: inline-block;
+  min-width: 12.5em;
+  min-height: var(--KEYJUMP-shortcut-input-height);
+  padding: 3px 0 1px 4px;
+  color: rgba(48, 57, 66, 0.6);
+  border: solid 1px #bfbfbf;
+  border-radius: 2px;
+  font-size: inherit;
+}
+
+.option-text input:focus {
+  background: white;
+  color: black;
+  border-color: black;
 }

@@ -267,6 +267,13 @@ function triggerMatchingHint() {
 }
 
 function activateHintMode() {
+  if (state.options.useLettersForHints) {
+    // when using alphanumeric hints, we use a seeded random number generator
+    // to generate random looking hints that don't change when scrolling
+    // (only when toggling hint mode)
+    state.initialRngSeed = Math.floor(+Date.now() / 100000)
+  }
+
   findHints()
 
   if (!state.hints.length) {
@@ -359,7 +366,7 @@ function clearFilterFromHints() {
 }
 
 function findHints() {
-  const targetEls = state.rootEl.querySelectorAll(
+  let targetEls = state.rootEl.querySelectorAll(
     [
       // Don't search for 'a' to avoid finding elements used only for fragment
       // links (jump to a point in a page) which sometimes mess up the hint
@@ -381,6 +388,9 @@ function findHints() {
   let lookupTable
 
   if (state.options.useLettersForHints) {
+    state.rngSeed = state.initialRngSeed
+    console.log(state.rngSeed)
+    targetEls = shuffle([...targetEls])
     lookupTable = generateAlphabetLookupTable(state.options.hintAlphabet)
     hintId = lookupTable.get(0).repeat(2)
   } else {
@@ -390,7 +400,7 @@ function findHints() {
 
   state.hints = []
 
-  for (const el of shuffle([...targetEls])) {
+  for (const el of targetEls) {
     if (isElementVisible(el)) {
       state.hints.push({
         id: String(hintId),
@@ -435,7 +445,7 @@ function getNextId(id, lookupTable) {
     // with a small probability we skip the current index completely to bring more
     // variety to the more significant positions of the ID. Don't make the ID longer
     // than it has to be, though.
-    if (Math.random() < skipProb && i < id.length - 1) {
+    if (random() < skipProb && i < id.length - 1) {
       result = result + chr
       continue
     }
@@ -451,8 +461,7 @@ function getNextId(id, lookupTable) {
       chr = lookupTable.get(ord)
 
       // the higher in the alphabet the new letter is, the higher the chance that we skip it
-      skip =
-        Math.floor(Math.random() * lookupTable.get('length') * skipBias) < ord
+      skip = Math.floor(random() * lookupTable.get('length') * skipBias) < ord
     } while (skip)
 
     result = result + chr
@@ -471,13 +480,20 @@ function getNextId(id, lookupTable) {
 
 function shuffle(input) {
   for (let i = input.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
+    const j = Math.floor(random() * (i + 1))
     const temp = input[i]
     input[i] = input[j]
     input[j] = temp
   }
 
   return input
+}
+
+function random() {
+  // small seeded random number generator, not exactly uniform but good enough for
+  // our purposes.
+  const x = Math.sin(state.rngSeed++) * 10000;
+  return x - Math.floor(x);
 }
 
 function generateAlphabetLookupTable(alphabet) {

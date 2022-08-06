@@ -59,7 +59,7 @@ function processOptions(options) {
     activateNewTab: true,
     ignoreWhileInputFocused: true,
     useLettersForHints: false,
-    hintAlphabet: "JKLASDFUIOPWERTNMZXCV" // close to the home-row
+    hintAlphabet: 'JKLASDFGHUIOPWERTNMZXCV', // close to the home-row
   }
 
   let saveOptions = false

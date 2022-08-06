@@ -107,8 +107,8 @@ function handleKeydown(event) {
       handleEscapeKey(event)
     } else {
       const allowedQueryCharacters = state.options.useLettersForHints
-            ? /[0-9]/
-            : /[0-9A-Za-zÀ-ÖØ-öø-ÿ]/
+        ? /[0-9]/
+        : /[0-9A-Za-zÀ-ÖØ-öø-ÿ]/
 
       if (event.key.match(allowedQueryCharacters)) {
         handleQueryKey(event)
@@ -377,20 +377,120 @@ function findHints() {
     ].join(','),
   )
 
-  let hintId = 1
+  let hintId
+  let lookupTable
+
+  if (state.options.useLettersForHints) {
+    lookupTable = generateAlphabetLookupTable(state.options.hintAlphabet)
+    hintId = lookupTable.get(0).repeat(2)
+  } else {
+    hintId = 1
+    lookupTable = null
+  }
 
   state.hints = []
 
-  for (const el of targetEls) {
+  for (const el of shuffle([...targetEls])) {
     if (isElementVisible(el)) {
       state.hints.push({
         id: String(hintId),
         targetEl: el,
       })
 
-      hintId++
+      if (state.options.useLettersForHints) {
+        // The alphanumeric IDs should satisfy the following properties:
+        // 1. They have to be unique.
+        // 2. Letters that occur earlier in the alphabet string should occur more often
+        //    (The user can then order the keys by how easily they are reachable).
+        // 3. Adjacent IDs should not look similar if possible.
+        // 4. IDs should have at least two letters (mostly aesthetic, but saves time on typos)
+        //
+        // To satisfy the first 2 properties, we iterate through all words over the
+        // hint alphabet in (flipped) lexicographic order, but randomly skip words
+        // with probability depending on the position of their letters in the alphabet
+        // string. The third one we approximate by shuffling the array of targets.
+        hintId = getNextId(hintId, lookupTable)
+      } else {
+        hintId++
+      }
     }
   }
+}
+
+function getNextId(id, lookupTable) {
+  // implements the algorithm described above
+  
+  const skipBias = 1.5
+  const skipProb = 0.2
+  
+  let result = ""
+  let carry = true
+
+  // generally "increments" the string by one, where the least significant letter is at position 0
+  for (i = 0; i < id.length; i++) {    
+    let chr = id.charAt(i)
+    let ord = lookupTable.get(chr)
+
+    // with a small probability we skip the current index completely to bring more 
+    // variety to the more significant positions of the ID. Don't make the ID longer
+    // than it has to be, though.
+    if (Math.random() < skipProb && i < id.length - 1) {
+      result = result + chr
+      continue
+    }
+
+    do {
+      if (lookupTable.has(ord + 1)) {
+        ord = ord + 1
+        carry = false
+      } else {
+        ord = 0
+      }
+
+      chr = lookupTable.get(ord)
+      
+      // the higher in the alphabet the new letter is, the higher the chance that we skip it
+      skip = Math.floor(Math.random() * lookupTable.get("length") * skipBias) < ord
+    } while (skip)
+
+    result = result + chr
+
+    if (!carry) {
+      return result + id.substr(i+1)
+    }
+  }
+
+  if (carry) {
+    result = lookupTable.get(0).repeat(id.length + 1)
+  }
+
+  return result
+}
+
+function shuffle(input) {
+  for (i = input.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i+1))
+    const temp = input[i]
+    input[i] = input[j]
+    input[j] = temp
+  }
+
+  return input
+}
+
+function generateAlphabetLookupTable(alphabet) {
+  // Generates a lookup table that maps symbols to their position in the hint alphabet
+  // and vice versa. Speeds up hint rendering.
+  const table = new Map();
+  const noDuplicates = [...new Set(alphabet)]
+  noDuplicates.forEach((elem, idx) => {
+    table.set(elem, idx)
+    table.set(idx, elem)
+  })
+
+  table.set("length", noDuplicates.length)
+  
+  return table
 }
 
 function renderHints() {

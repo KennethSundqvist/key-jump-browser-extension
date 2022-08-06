@@ -23,11 +23,9 @@ function setup() {
     'ignoreWhileInputFocused',
   )
   const useLettersForHintsCheckbox =
-        document.getElementById('useLettersForHints')
+    document.getElementById('useLettersForHints')
 
-  const hintAlphabetInput = document.getElementById(
-    'hintAlphabetInput'
-  )
+  const hintAlphabetInput = document.getElementById('hintAlphabetInput')
 
   activationShortcutInput.placeholder = getShortcutText(
     state.options.activationShortcut,
@@ -134,7 +132,9 @@ function handleHintAlphabetInput(event) {
   const filteredInput = input.replace(/[^0-9A-Za-zÀ-ÖØ-öø-ÿ]/g, '')
 
   event.target.value = filteredInput
-  saveOptions({hintAlphabet: filteredInput})
+  saveOptions({
+    hintAlphabet: filteredInput,
+  })
 }
 
 function saveOptions(options) {

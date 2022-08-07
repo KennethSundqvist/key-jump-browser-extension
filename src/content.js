@@ -102,7 +102,7 @@ function handleKeydown(event) {
     stopKeyboardEvent(event)
   } else if (isActivationShortcut || isNewTabActivationShortcut) {
     handleActivationKey(event)
-  } else if (state.active && !eventHasModifierKey(event)) {
+  } else if (state.active && !eventHasNonShiftModifierKey(event)) {
     if (event.key === 'Escape') {
       handleEscapeKey(event)
     } else {
@@ -147,8 +147,8 @@ function stopKeyboardEvent(event) {
   event.stopImmediatePropagation()
 }
 
-function eventHasModifierKey(event) {
-  return !!(event.shiftKey || event.ctrlKey || event.altKey || event.metaKey)
+function eventHasNonShiftModifierKey(event) {
+  return !!(event.ctrlKey || event.altKey || event.metaKey)
 }
 
 function handleActivationKey(event) {

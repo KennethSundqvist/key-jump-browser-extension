@@ -169,7 +169,6 @@ function handleActivationKey(event) {
     state.openInNewTab = isNewTabActivationShortcut
     activateHintMode()
   }
-
 }
 
 function handleEscapeKey(event) {
@@ -195,7 +194,7 @@ function handleQueryKey(event) {
   const newQuery = (state.query + event.key).toUpperCase()
 
   // if O(n) turns out to be to slow for this, we could manage ids using a search tree
-  // but I think that's overkill for now  
+  // but I think that's overkill for now
   const newMatch = state.matches.find((elem) => elem.id.startsWith(newQuery))
 
   if (newMatch) {
@@ -203,7 +202,7 @@ function handleQueryKey(event) {
     state.matchingHint = newMatch
 
     filterHints()
-      
+
     if (state.options.autoTrigger && state.matches.length <= 1) {
       triggerMatchingHint()
     }
@@ -344,7 +343,9 @@ function filterHints() {
     hint.hintEl.classList[method](classNames.match)
   }
 
-  state.matches = state.matches.filter((elem) => elem.id.startsWith(state.query))
+  state.matches = state.matches.filter((elem) =>
+    elem.id.startsWith(state.query),
+  )
 }
 
 function shouldElementBeFocused(el) {

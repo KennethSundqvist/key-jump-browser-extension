@@ -107,8 +107,8 @@ function handleKeydown(event) {
       handleEscapeKey(event)
     } else {
       const allowedQueryCharacters = state.options.useLettersForHints
-        ? /[0-9]/
-        : /[0-9A-Za-zÀ-ÖØ-öø-ÿ]/
+        ? /[0-9A-Za-zÀ-ÖØ-öø-ÿ]/
+        : /[0-9]/
 
       if (event.key.match(allowedQueryCharacters)) {
         handleQueryKey(event)
@@ -169,6 +169,7 @@ function handleActivationKey(event) {
     state.openInNewTab = isNewTabActivationShortcut
     activateHintMode()
   }
+
 }
 
 function handleEscapeKey(event) {
@@ -191,37 +192,19 @@ function handleQueryKey(event) {
 
   stopKeyboardEvent(event)
 
-  const newQuery = state.query + event.key
-  const newQueryAsInt = parseInt(newQuery)
-  const newMatch = state.hints[newQueryAsInt - 1]
+  const newQuery = (state.query + event.key).toUpperCase()
+
+  // if O(n) turns out to be to slow for this, we could manage ids using a search tree
+  // but I think that's overkill for now  
+  const newMatch = state.matches.find((elem) => elem.id.startsWith(newQuery))
 
   if (newMatch) {
     state.query = newQuery
     state.matchingHint = newMatch
 
     filterHints()
-
-    if (
-      state.options.autoTrigger &&
-      // Now we check if it's possible to match another hint by appending
-      // another digit to the query. For example if the query is 1 and there are
-      // 15 hints then you could match hints 10-15 by appending 0-5 to the
-      // query.
-      //
-      // To do the check we first multiply the query with 10 because that will
-      // append a 0 to the end of the query, the lowest number that can be
-      // appended. Then we check if there are fewer hints than the new query, in
-      // which case no more matches can be made and we can autotrigger the
-      // current match.
-      //
-      // Assume that there are 15 hints, then:
-      // * Query = 1, Query * 10 = 10, and since 10 is less than 15 we know that
-      //   you could match hints 10-15 by appending 0-5 to the query.
-      // * Query = 2, Query * 10 = 20, and since 20 is more than 15 we know that
-      //   you can't match any other hints by appending another digit to the
-      //   query.
-      state.hints.length < newQueryAsInt * 10
-    ) {
+      
+    if (state.options.autoTrigger && state.matches.length <= 1) {
       triggerMatchingHint()
     }
   }
@@ -360,6 +343,8 @@ function filterHints() {
     const method = hint.id.startsWith(state.query) ? 'add' : 'remove'
     hint.hintEl.classList[method](classNames.match)
   }
+
+  state.matches = state.matches.filter((elem) => elem.id.startsWith(state.query))
 }
 
 function shouldElementBeFocused(el) {
@@ -431,6 +416,8 @@ function findHints() {
       })
     }
   }
+
+  state.matches = state.hints
 }
 
 function getNextId(id, lookupTable) {

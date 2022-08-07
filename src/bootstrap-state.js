@@ -40,7 +40,7 @@ KJ.bootstrapState = function bootstrapState(state = {}, callback) {
 
 function processOptions(options) {
   const defaultOptions = {
-    optionsVersion: 3,
+    optionsVersion: 4,
     activationShortcut: {
       key: ',',
       shiftKey: false,
@@ -59,7 +59,7 @@ function processOptions(options) {
     activateNewTab: true,
     ignoreWhileInputFocused: true,
     useLettersForHints: false,
-    hintAlphabet: 'JKLASDFGHUIOPWERTNMZXCV', // close to the home-row
+    hintAlphabet: 'JKLASDFGHUIOPWERT', // close to the home-row
   }
 
   let saveOptions = false
@@ -77,6 +77,12 @@ function processOptions(options) {
     saveOptions = true
     options.optionsVersion = 3
     options.ignoreWhileInputFocused = true
+  }
+  if (options.optionsVersion === 3) {
+    saveOptions = true
+    options.optionsVersion = 4
+    options.useLettersForHints = false
+    options.hintAlphabet = 'JKLASDFGHUIOPWERT'
   }
   if (options.optionsVersion !== defaultOptions.optionsVersion) {
     saveOptions = true

@@ -16,11 +16,16 @@ function setup() {
   const newTabActivationShortcutInput = document.getElementById(
     'newTabActivationShortcutInput',
   )
+
   const autoTriggerCheckbox = document.getElementById('autoTrigger')
   const activateNewTabCheckbox = document.getElementById('activateNewTab')
   const ignoreWhileInputFocusedCheckbox = document.getElementById(
     'ignoreWhileInputFocused',
   )
+  const useLettersForHintsCheckbox =
+    document.getElementById('useLettersForHints')
+
+  const hintAlphabetInput = document.getElementById('hintAlphabetInput')
 
   activationShortcutInput.placeholder = getShortcutText(
     state.options.activationShortcut,
@@ -28,15 +33,23 @@ function setup() {
   newTabActivationShortcutInput.placeholder = getShortcutText(
     state.options.newTabActivationShortcut,
   )
+
   autoTriggerCheckbox.checked = state.options.autoTrigger
   activateNewTabCheckbox.checked = state.options.activateNewTab
+  useLettersForHintsCheckbox.checked = state.options.useLettersForHints
   ignoreWhileInputFocusedCheckbox.checked =
     state.options.ignoreWhileInputFocused
 
+  hintAlphabetInput.value = state.options.hintAlphabet
+
   bindShortcutInput('activationShortcut', activationShortcutInput)
   bindShortcutInput('newTabActivationShortcut', newTabActivationShortcutInput)
+
+  hintAlphabetInput.addEventListener('input', handleHintAlphabetInput)
+
   autoTriggerCheckbox.addEventListener('change', setAutoTrigger)
   activateNewTabCheckbox.addEventListener('change', setActivateNewTab)
+  useLettersForHintsCheckbox.addEventListener('change', setUseLettersForHints)
   ignoreWhileInputFocusedCheckbox.addEventListener(
     'change',
     setIgnoreWhileInputFocused,
@@ -107,6 +120,21 @@ function setActivateNewTab(event) {
 
 function setIgnoreWhileInputFocused(event) {
   saveOptions({ignoreWhileInputFocused: event.target.checked})
+}
+
+function setUseLettersForHints(event) {
+  saveOptions({useLettersForHints: event.target.checked})
+}
+
+function handleHintAlphabetInput(event) {
+  // we want only alphanumeric characters
+  const input = event.target.value.toUpperCase()
+  const filteredInput = input.replace(/[^0-9A-Za-zÀ-ÖØ-öø-ÿ]/g, '')
+
+  event.target.value = filteredInput
+  saveOptions({
+    hintAlphabet: filteredInput,
+  })
 }
 
 function saveOptions(options) {

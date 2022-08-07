@@ -10,7 +10,7 @@
     "lint:fix": "prettier --write \"**/*.{md,json,js,css,html}\" && eslint --fix . && web-ext lint",
     "test": "npm run lint",
     "build": "web-ext build",
-    "start": "web-ext run",
+    "start": "web-ext run --verbose",
     "serve-tests": "node npm-scripts/start.js"
   },
   "devDependencies": {

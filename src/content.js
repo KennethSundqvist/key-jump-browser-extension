@@ -102,13 +102,15 @@ function handleKeydown(event) {
     stopKeyboardEvent(event)
   } else if (isActivationShortcut || isNewTabActivationShortcut) {
     handleActivationKey(event)
-  } else if (state.active && !eventHasModifierKey(event)) {
+  } else if (state.active && !eventHasNonShiftModifierKey(event)) {
     if (event.key === 'Escape') {
       handleEscapeKey(event)
     } else {
-      const allowedQueryCharacters = '1234567890'
+      const allowedQueryCharacters = state.options.useLettersForHints
+        ? /[0-9A-Za-zÀ-ÖØ-öø-ÿ]/
+        : /[0-9]/
 
-      if (allowedQueryCharacters.includes(event.key)) {
+      if (event.key.match(allowedQueryCharacters)) {
         handleQueryKey(event)
       }
     }
@@ -145,8 +147,8 @@ function stopKeyboardEvent(event) {
   event.stopImmediatePropagation()
 }
 
-function eventHasModifierKey(event) {
-  return !!(event.shiftKey || event.ctrlKey || event.altKey || event.metaKey)
+function eventHasNonShiftModifierKey(event) {
+  return !!(event.ctrlKey || event.altKey || event.metaKey)
 }
 
 function handleActivationKey(event) {
@@ -189,9 +191,11 @@ function handleQueryKey(event) {
 
   stopKeyboardEvent(event)
 
-  const newQuery = state.query + event.key
-  const newQueryAsInt = parseInt(newQuery)
-  const newMatch = state.hints[newQueryAsInt - 1]
+  const newQuery = (state.query + event.key).toUpperCase()
+
+  // if O(n) turns out to be to slow for this, we could manage ids using a search tree
+  // but I think that's overkill for now
+  const newMatch = state.matches.find((elem) => elem.id.startsWith(newQuery))
 
   if (newMatch) {
     state.query = newQuery
@@ -199,27 +203,7 @@ function handleQueryKey(event) {
 
     filterHints()
 
-    if (
-      state.options.autoTrigger &&
-      // Now we check if it's possible to match another hint by appending
-      // another digit to the query. For example if the query is 1 and there are
-      // 15 hints then you could match hints 10-15 by appending 0-5 to the
-      // query.
-      //
-      // To do the check we first multiply the query with 10 because that will
-      // append a 0 to the end of the query, the lowest number that can be
-      // appended. Then we check if there are fewer hints than the new query, in
-      // which case no more matches can be made and we can autotrigger the
-      // current match.
-      //
-      // Assume that there are 15 hints, then:
-      // * Query = 1, Query * 10 = 10, and since 10 is less than 15 we know that
-      //   you could match hints 10-15 by appending 0-5 to the query.
-      // * Query = 2, Query * 10 = 20, and since 20 is more than 15 we know that
-      //   you can't match any other hints by appending another digit to the
-      //   query.
-      state.hints.length < newQueryAsInt * 10
-    ) {
+    if (state.options.autoTrigger && state.matches.length <= 1) {
       triggerMatchingHint()
     }
   }
@@ -265,6 +249,31 @@ function triggerMatchingHint() {
 }
 
 function activateHintMode() {
+  state.targetEls = state.rootEl.querySelectorAll(
+    [
+      // Don't search for 'a' to avoid finding elements used only for fragment
+      // links (jump to a point in a page) which sometimes mess up the hint
+      // numbering or it looks like they can be clicked when they can't.
+      'a[href]',
+      'input:not([disabled]):not([type=hidden])',
+      'textarea:not([disabled])',
+      'select:not([disabled])',
+      'button:not([disabled])',
+      '[contenteditable]:not([contenteditable=false]):not([disabled])',
+      '[ng-click]:not([disabled])',
+      // GWT Anchor widget class
+      // http://www.gwtproject.org/javadoc/latest/com/google/gwt/user/client/ui/Anchor.html
+      '.gwt-Anchor',
+    ].join(','),
+  )
+
+  if (state.options.useLettersForHints) {
+    // when using alphanumeric hints, we use a seeded random number generator
+    // to generate random looking hints that don't change when scrolling
+    // (only when toggling hint mode)
+    state.initialRngSeed = Math.floor(+Date.now() % 100000)
+  }
+
   findHints()
 
   if (!state.hints.length) {
@@ -328,6 +337,10 @@ function filterHints() {
     const method = hint.id.startsWith(state.query) ? 'add' : 'remove'
     hint.hintEl.classList[method](classNames.match)
   }
+
+  state.matches = state.matches.filter((elem) =>
+    elem.id.startsWith(state.query),
+  )
 }
 
 function shouldElementBeFocused(el) {
@@ -357,38 +370,135 @@ function clearFilterFromHints() {
 }
 
 function findHints() {
-  const targetEls = state.rootEl.querySelectorAll(
-    [
-      // Don't search for 'a' to avoid finding elements used only for fragment
-      // links (jump to a point in a page) which sometimes mess up the hint
-      // numbering or it looks like they can be clicked when they can't.
-      'a[href]',
-      'input:not([disabled]):not([type=hidden])',
-      'textarea:not([disabled])',
-      'select:not([disabled])',
-      'button:not([disabled])',
-      '[contenteditable]:not([contenteditable=false]):not([disabled])',
-      '[ng-click]:not([disabled])',
-      // GWT Anchor widget class
-      // http://www.gwtproject.org/javadoc/latest/com/google/gwt/user/client/ui/Anchor.html
-      '.gwt-Anchor',
-    ].join(','),
-  )
+  let hintId
+  let lookupTable
 
-  let hintId = 1
+  if (state.options.useLettersForHints) {
+    state.rngSeed = state.initialRngSeed
+
+    lookupTable = generateAlphabetLookupTable(state.options.hintAlphabet)
+    hintId = lookupTable.get(0).repeat(2)
+  } else {
+    hintId = 1
+    lookupTable = null
+  }
 
   state.hints = []
 
-  for (const el of targetEls) {
+  for (const el of state.targetEls) {
+    // generate IDs for all target elements, even non-visible ones (avoids changing hints when scrolling)
+    if (state.options.useLettersForHints) {
+      // The alphanumeric IDs should satisfy the following properties:
+      // 1. They have to be unique.
+      // 2. Letters that occur earlier in the alphabet string should occur more often
+      //    (The user can then order the keys by how easily they are reachable).
+      // 3. Adjacent IDs should not start with the same letter (filter quickly)
+      // 4. IDs should have at least two letters (mostly aesthetic, but saves time on typos)
+      //
+      // To satisfy the first 2 properties, we iterate through all words over the
+      // hint alphabet in lexicographic order, but randomly skip words
+      // with probability depending on the position of their letters in the alphabet
+      // string. The third one we satisfy by having the least-significant letter at
+      // the beginning.
+      hintId = getNextId(hintId, lookupTable)
+    } else {
+      hintId++
+    }
+
+    // if the element is visible, push it onto the render stack
     if (isElementVisible(el)) {
       state.hints.push({
         id: String(hintId),
         targetEl: el,
       })
-
-      hintId++
     }
   }
+
+  state.matches = state.hints
+}
+
+function getNextId(id, lookupTable) {
+  // implements the algorithm described above
+
+  const skipBias = 1.5
+  const skipProb = 0.2
+
+  let result = ''
+  let carry = true
+
+  // generally "increments" the string by one, where the least significant letter is at position 0
+  for (let i = 0; i < id.length; i++) {
+    let chr = id.charAt(i)
+    let ord = lookupTable.get(chr)
+    let skip
+
+    // with a small probability we skip the current index completely to bring more
+    // variety to the more significant positions of the ID. Don't make the ID longer
+    // than it has to be, though.
+    if (random() < skipProb && i < id.length - 1) {
+      result = result + chr
+      continue
+    }
+
+    do {
+      if (lookupTable.has(ord + 1)) {
+        ord = ord + 1
+        carry = false
+      } else {
+        ord = 0
+      }
+
+      chr = lookupTable.get(ord)
+
+      // the higher in the alphabet the new letter is, the higher the chance that we skip it
+      skip = Math.floor(random() * lookupTable.get('length') * skipBias) < ord
+    } while (skip)
+
+    result = result + chr
+
+    if (!carry) {
+      return result + id.substr(i + 1)
+    }
+  }
+
+  if (carry) {
+    result = lookupTable.get(0).repeat(id.length + 1)
+  }
+
+  return result
+}
+
+function shuffle(input) {
+  for (let i = input.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1))
+    const temp = input[i]
+    input[i] = input[j]
+    input[j] = temp
+  }
+
+  return input
+}
+
+function random() {
+  // small seeded random number generator, not exactly uniform but good enough for
+  // our purposes.
+  const x = Math.sin(state.rngSeed++) * 10000
+  return x - Math.floor(x)
+}
+
+function generateAlphabetLookupTable(alphabet) {
+  // Generates a lookup table that maps symbols to their position in the hint alphabet
+  // and vice versa. Speeds up hint rendering.
+  const table = new Map()
+  const noDuplicates = [...new Set(alphabet)]
+  noDuplicates.forEach((elem, idx) => {
+    table.set(elem, idx)
+    table.set(idx, elem)
+  })
+
+  table.set('length', noDuplicates.length)
+
+  return table
 }
 
 function renderHints() {

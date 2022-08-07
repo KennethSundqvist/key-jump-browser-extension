@@ -271,12 +271,7 @@ function activateHintMode() {
     // when using alphanumeric hints, we use a seeded random number generator
     // to generate random looking hints that don't change when scrolling
     // (only when toggling hint mode)
-    state.initialRngSeed = Math.floor(+Date.now() / 100000)
-    state.rngSeed = state.initialRngSeed
-
-    // shuffle target elements to avoid similarities in adjacent hints when
-    // using alphanumeric ids (see algorithm description in findHints())
-    state.targetEls = shuffle([...state.targetEls])
+    state.initialRngSeed = Math.floor(+Date.now() % 100000)
   }
 
   findHints()
@@ -397,13 +392,14 @@ function findHints() {
       // 1. They have to be unique.
       // 2. Letters that occur earlier in the alphabet string should occur more often
       //    (The user can then order the keys by how easily they are reachable).
-      // 3. Adjacent IDs should not look similar if possible.
+      // 3. Adjacent IDs should not start with the same letter (filter quickly)
       // 4. IDs should have at least two letters (mostly aesthetic, but saves time on typos)
       //
       // To satisfy the first 2 properties, we iterate through all words over the
-      // hint alphabet in (flipped) lexicographic order, but randomly skip words
+      // hint alphabet in lexicographic order, but randomly skip words
       // with probability depending on the position of their letters in the alphabet
-      // string. The third one we approximate by shuffling the array of targets.
+      // string. The third one we satisfy by having the least-significant letter at
+      // the beginning.
       hintId = getNextId(hintId, lookupTable)
     } else {
       hintId++

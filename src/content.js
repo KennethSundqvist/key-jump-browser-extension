@@ -369,6 +369,8 @@ function findHints() {
       'button:not([disabled])',
       '[contenteditable]:not([contenteditable=false]):not([disabled])',
       '[ng-click]:not([disabled])',
+      '[role=button]:not([disabled])',
+      '[role=link]',
       // GWT Anchor widget class
       // http://www.gwtproject.org/javadoc/latest/com/google/gwt/user/client/ui/Anchor.html
       '.gwt-Anchor',

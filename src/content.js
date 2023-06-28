@@ -369,6 +369,18 @@ function findHints() {
       'button:not([disabled])',
       '[contenteditable]:not([contenteditable=false]):not([disabled])',
       '[ng-click]:not([disabled])',
+      '[onclick]',
+      // Detect by aria-roles, since modern apps might not use <button /> and <a href="..."/>
+      // (see https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles)
+      '[role=link]',
+      '[role=button]:not([disabled])',
+      '[role=radio]:not([disabled])',
+      '[role=checkbox]:not([disabled])',
+      '[role=textbox]:not([disabled])',
+      '[role=tab]:not([disabled])',
+      '[role=menuitem]:not([disabled])',
+      '[role=menuitemcheckbox]:not([disabled])',
+      '[role=menuitemradio]:not([disabled])',
       // GWT Anchor widget class
       // http://www.gwtproject.org/javadoc/latest/com/google/gwt/user/client/ui/Anchor.html
       '.gwt-Anchor',
